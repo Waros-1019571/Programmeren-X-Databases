@@ -1,4 +1,4 @@
-package com.codecademy.codecademy;
+package com.codecademy;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

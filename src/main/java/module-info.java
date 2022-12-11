@@ -3,6 +3,6 @@ module com.codecademy.codecademy {
     requires javafx.fxml;
 
 
-    opens com.codecademy.codecademy to javafx.fxml;
-    exports com.codecademy.codecademy;
+    opens com.codecademy to javafx.fxml;
+    exports com.codecademy;
 }
