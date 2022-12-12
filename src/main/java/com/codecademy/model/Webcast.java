@@ -17,4 +17,35 @@ public class Webcast {
         this.voiceActor = voiceActor;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Date getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public VoiceActor getVoiceActor() {
+        return voiceActor;
+    }
+
+    public void setVoiceActor(VoiceActor voiceActor) {
+        this.voiceActor = voiceActor;
+    }
 }
