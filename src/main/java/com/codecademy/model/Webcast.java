@@ -7,7 +7,7 @@ public class Webcast {
     private int duration;
     private Date publicationDate;
     private String url;
-    //private HashMap<Student, Double> progressOfStudent = new HashMap<Student, Double>();//
+    private HashMap<Student, Double> progressOfStudent = new HashMap<Student, Double>();
     private VoiceActor voiceActor;
 
     public Webcast(int duration, Date publicationDate, String url, VoiceActor voiceActor) {
@@ -15,6 +15,10 @@ public class Webcast {
         this.publicationDate = publicationDate;
         this.url = url;
         this.voiceActor = voiceActor;
+    }
+
+    public void addStudentProgress (Student student, Double progress) {
+        progressOfStudent.put(student, progress);
     }
 
     public int getDuration() {
