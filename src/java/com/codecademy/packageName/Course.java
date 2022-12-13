@@ -1,3 +1,7 @@
+package src.java.com.codecademy.packageName;
+
+import java.util.ArrayList;
+
 public class Course {
     private int courseId;
     private String title;
@@ -5,11 +9,26 @@ public class Course {
     private String courseOwnerName;
     private String description;
 
-    
 
+    public int getStatisticOfPerson(Person student){
+        return 0;
+    }
 
+    public void enrollStudent(Person student){
 
+    }
 
+    public void deenrollStudent(Person student){
+
+    }
+
+    public ArrayList<Webcast> getTopWebcast(){
+        return ArrayList<Webcast>;
+    }
+
+    public ArrayList<Course> getRecommendations(){
+        return ArrayList<Course>;
+    }
 
     //------------------ Default getters and setters
 
