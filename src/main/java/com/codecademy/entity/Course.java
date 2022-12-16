@@ -1,6 +1,4 @@
-package com.codecademy.model;
-
-import java.util.ArrayList;
+package com.codecademy.entity;
 
 public class Course {
     private int courseId;

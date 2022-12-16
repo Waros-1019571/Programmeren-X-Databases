@@ -1,4 +1,4 @@
-package com.codecademy.model;
+package com.codecademy.entity;
 
 import java.util.Date;
 import java.util.HashMap;

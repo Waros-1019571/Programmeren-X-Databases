@@ -1,4 +1,4 @@
-package com.codecademy.model;
+package com.codecademy.entity;
 
 public class Organisation {
     private int organisationId;
