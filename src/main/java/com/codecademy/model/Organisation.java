@@ -1,15 +1,18 @@
-package src.java.com.codecademy.packageName;
+package com.codecademy.model;
 
 public class Organisation {
     private int organisationId;
     private String name;
 
-
+    public Organisation(int organisationId, String name) {
+        this.organisationId = organisationId;
+        this.name = name;
+    }
 
     //------------------ Default getters and setters
 
     public int getOrganisationId() {
-        return courseId;
+        return organisationId;
     }
 
     public void setOrganisationId(int organisationId) {
@@ -17,7 +20,7 @@ public class Organisation {
     }
 
     public String getName() {
-        return title;
+        return name;
     }
 
     public void setName(String name) {

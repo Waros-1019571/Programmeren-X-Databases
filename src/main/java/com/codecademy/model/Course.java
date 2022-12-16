@@ -1,4 +1,4 @@
-package src.java.com.codecademy.packageName;
+package com.codecademy.model;
 
 import java.util.ArrayList;
 
@@ -9,26 +9,33 @@ public class Course {
     private String courseOwnerName;
     private String description;
 
-
-    public int getStatisticOfPerson(Person student){
-        return 0;
+    public Course(int courseId, String title, String topic, String courseOwnerName, String description) {
+        this.courseId = courseId;
+        this.title = title;
+        this.topic = topic;
+        this.courseOwnerName = courseOwnerName;
+        this.description = description;
     }
 
-    public void enrollStudent(Person student){
+    //    public int getStatisticOfPerson(Person student){
+//        return 0;
+//    }
+//
+//    public void enrollStudent(Person student){
+//
+//    }
+//
+//    public void deenrollStudent(Person student){
+//
+//    }
 
-    }
-
-    public void deenrollStudent(Person student){
-
-    }
-
-    public ArrayList<Webcast> getTopWebcast(){
-        return ArrayList<Webcast>;
-    }
-
-    public ArrayList<Course> getRecommendations(){
-        return ArrayList<Course>;
-    }
+//    public ArrayList<Webcast> getTopWebcast(){
+//        return ArrayList<Webcast>;
+//    }
+//
+//    public ArrayList<Course> getRecommendations(){
+//        return ArrayList<Course>;
+//    }
 
     //------------------ Default getters and setters
 
