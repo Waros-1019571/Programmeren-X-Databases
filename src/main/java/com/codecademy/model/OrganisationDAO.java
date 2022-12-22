@@ -4,10 +4,7 @@ import com.codecademy.entity.Organisation;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +34,7 @@ public class OrganisationDAO implements DAO<Organisation> {
                 organisationList.add(organisation);
             }
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
@@ -58,8 +55,29 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public void create(Organisation organisation) {
+    public void create(Organisation organisation) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet result = null;
 
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("INSERT INTO ORGANISATION (Name) VALUES(?)");
+            String name = organisation.getName();
+            statement.setString(1, name);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (result != null) {
+                result.close();
+            }
+
+            if (statement != null) {
+                statement.close();
+            }
+        }
     }
 
     @Override
