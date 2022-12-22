@@ -14,7 +14,7 @@ public class MainTesting {
         DBConnection dbConnection = new DBConnection();
         OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
         Organisation organisation = new Organisation();
-        organisation.setName("OrganisationName1");
+        organisation.setName("a");
         organisation.setOrganisationId(1);
 
         try {

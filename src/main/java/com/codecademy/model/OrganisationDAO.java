@@ -84,7 +84,7 @@ public class OrganisationDAO implements DAO<Organisation> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("SELECT * FROM Organisation WHERE ID = ?");
+            statement = connection.prepareStatement("SELECT count(*) FROM Organisation WHERE ID = ?");
             statement.setInt(1, organisation.getOrganisationId());
 
             result = statement.executeQuery();
