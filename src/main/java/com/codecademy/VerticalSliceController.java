@@ -24,6 +24,7 @@ public class VerticalSliceController {
         loader.setControllerFactory(newController -> {
             OrganisationOverviewController controller = new OrganisationOverviewController();
             controller.setOrganisationDAO(organisationDAO);
+            controller.setRoot(root);
             return controller;
         });
 

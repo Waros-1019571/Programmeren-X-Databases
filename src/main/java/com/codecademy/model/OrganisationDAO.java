@@ -124,7 +124,32 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public void delete(Organisation organisation) {
+    public boolean delete(Organisation organisation) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        ArrayList<Organisation> organisationList = new ArrayList<>();
 
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("DELETE FROM ORGANISATION WHERE ID = ?");
+            statement.setInt(1, organisation.getOrganisationId());
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                return true;
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (result != null) {
+                result.close();
+            }
+
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return false;
     }
 }
