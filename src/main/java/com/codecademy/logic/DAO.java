@@ -12,7 +12,7 @@ public interface DAO<T> {
 
         void create(T t) throws SQLException;
 
-        void update(T t, String[] params);
+        void update(T t);
 
         void delete(T t);
 

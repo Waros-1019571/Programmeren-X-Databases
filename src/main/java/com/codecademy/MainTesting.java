@@ -4,7 +4,9 @@ import com.codecademy.entity.Organisation;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.OrganisationDAO;
 
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 public class MainTesting {
 
@@ -13,10 +15,14 @@ public class MainTesting {
         OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
         Organisation organisation = new Organisation();
         organisation.setName("OrganisationName1");
+        organisation.setOrganisationId(1);
+
         try {
-            organisationDAO.create(organisation);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+            organisationDAO.update(organisation);
+        } catch (NoSuchElementException e) {
+//            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }

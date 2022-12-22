@@ -7,6 +7,7 @@ import com.codecademy.logic.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class OrganisationDAO implements DAO<Organisation> {
@@ -70,10 +71,6 @@ public class OrganisationDAO implements DAO<Organisation> {
             e.printStackTrace();
 
         } finally {
-            if (result != null) {
-                result.close();
-            }
-
             if (statement != null) {
                 statement.close();
             }
@@ -81,8 +78,49 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public void update(Organisation organisation, String[] params) {
+    public void update(Organisation organisation) {
+        PreparedStatement statement = null;
+        ResultSet result = null;
 
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM Organisation WHERE ID = ?");
+            statement.setInt(1, organisation.getOrganisationId());
+
+            result = statement.executeQuery();
+
+            if (!result.next()){
+                throw new NoSuchElementException("No results found");
+            } else {
+                statement = connection.prepareStatement("UPDATE Organisation SET Name = ? WHERE ID = ?");
+                statement.setString(1, organisation.getName());
+                statement.setInt(2, organisation.getOrganisationId());
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new SQLException("Update failed: no rows affected.");
+                }
+            }
+
+        } catch (SQLException | NoSuchElementException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (result != null) {
+                try {
+                    result.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @Override
