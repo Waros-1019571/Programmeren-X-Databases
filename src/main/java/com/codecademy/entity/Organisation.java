@@ -1,23 +1,31 @@
 package com.codecademy.entity;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Organisation {
-    private int organisationId;
-    private String name;
-    //------------------ Default getters and setters
+    private SimpleIntegerProperty organisationId;
+    private final SimpleStringProperty name;
+
+    public Organisation() {
+        this.organisationId = new SimpleIntegerProperty();
+        this.name = new SimpleStringProperty();
+    }
+
     public int getOrganisationId() {
-        return organisationId;
+        return organisationId.get();
     }
 
     public void setOrganisationId(int organisationId) {
-        this.organisationId = organisationId;
+        this.organisationId.set(organisationId);
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
 
