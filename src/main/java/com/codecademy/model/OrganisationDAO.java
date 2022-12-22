@@ -12,31 +12,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class OrganisationDAO  extends DBConnection implements DAO<Organisation> {
+public class OrganisationDAO implements DAO<Organisation> {
+    private DBConnection dbConnection;
+
+    public OrganisationDAO(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
+    @Override
+    public List<Organisation> getAll() throws SQLException {
+        Statement statement = null;
+        ResultSet result = null;
+        ArrayList<Organisation> organisationList = new ArrayList<>();
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM ORGANISATION");
+
+            while (result.next()) {
+                Organisation organisation = new Organisation();
+                organisation.setOrganisationId(result.getInt(1));
+                organisation.setName(result.getString(2));
+                organisationList.add(organisation);
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (result != null) {
+                result.close();
+            }
+
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return organisationList;
+    }
 
     @Override
     public Optional<Organisation> get(long id) {
         return Optional.empty();
-    }
-
-    @Override
-    public List<Organisation> getAll() {
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery("SELECT * FROM ORGANISATION");
-            ArrayList<Organisation> organisations = new ArrayList<>();
-            while (result.next()) {
-                Organisation organisation = new Organisation();
-                organisation.setOrganisationId(Integer.parseInt(result.getString(1)));
-                organisation.setName(result.getString(2));
-                organisations.add(organisation);
-            }
-            return organisations;
-
-        } catch(SQLException e) {
-            System.out.println(e.toString());
-        }
-        return null;
     }
 
     @Override
@@ -52,20 +70,5 @@ public class OrganisationDAO  extends DBConnection implements DAO<Organisation> 
     @Override
     public void delete(Organisation organisation) {
 
-    }
-
-    @Override
-    public ResultSet select(String query) {
-        return null;
-    }
-
-    @Override
-    public boolean update(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(String query) {
-        return false;
     }
 }
