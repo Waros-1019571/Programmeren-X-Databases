@@ -19,8 +19,6 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        OrganisationDAO organisationDAO = new OrganisationDAO();
-        System.out.println(organisationDAO.getAll().toString());
         launch();
     }
 }
