@@ -58,7 +58,7 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public void save(Organisation organisation) {
+    public void create(Organisation organisation) {
 
     }
 
