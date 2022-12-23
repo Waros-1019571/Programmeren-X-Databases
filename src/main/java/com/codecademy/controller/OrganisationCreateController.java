@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.nio.Buffer;
+import java.sql.SQLException;
 
 public class OrganisationCreateController {
     @FXML
@@ -28,11 +29,15 @@ public class OrganisationCreateController {
 
     public void initialize() {
         createBTN.setOnAction(event -> {
-            proccessCreateButton();
+            try {
+                proccessCreateButton();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
-    public void proccessCreateButton() {
+    public void proccessCreateButton() throws SQLException {
         Organisation organisation = new Organisation();
         organisation.setName(nameField.getText());
 
@@ -43,7 +48,7 @@ public class OrganisationCreateController {
 
     public void returnToOrganisationOverview(){
         Pane newPane = null;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Organisation-Overview-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Organisation-Overview-view.fxml"));
         loader.setControllerFactory(newController -> {
             OrganisationOverviewController controller = new OrganisationOverviewController();
             controller.setRoot(root);

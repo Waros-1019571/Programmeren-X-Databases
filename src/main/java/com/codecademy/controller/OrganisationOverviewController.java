@@ -24,6 +24,7 @@ public class OrganisationOverviewController {
     @FXML
     Button organisationDeleteBTN;
     OrganisationDAO organisationDAO;
+    @FXML
     Pane root;
 
     public void setOrganisationDAO(OrganisationDAO organisationDAO) {
@@ -75,9 +76,10 @@ public class OrganisationOverviewController {
         }
     }
 
+    @FXML
     private void processCreateButton() {
         Pane newPane = new Pane();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/com.codecademy/Organisation-Create-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Organisation-Create-view.fxml"));
         loader.setControllerFactory(newController -> {
             OrganisationCreateController controller = new OrganisationCreateController();
             controller.setRoot(root);

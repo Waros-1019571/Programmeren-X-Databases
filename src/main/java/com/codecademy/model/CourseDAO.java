@@ -1,7 +1,6 @@
 package com.codecademy.model;
 
 import com.codecademy.entity.Course;
-import com.codecademy.entity.Organisation;
 import com.codecademy.logic.DAO;
 
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public class CourseDAO implements DAO<Course> {
     }
 
     @Override
-    public void delete(Course course) {
-
+    public boolean delete(Course course) {
+        return false;
     }
 }

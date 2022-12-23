@@ -20,7 +20,7 @@ public class VerticalSliceController {
         DBConnection dbConnection = new DBConnection();
         OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Organisation-Overview-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Organisation-Overview-view.fxml"));
         loader.setControllerFactory(newController -> {
             OrganisationOverviewController controller = new OrganisationOverviewController();
             controller.setOrganisationDAO(organisationDAO);
