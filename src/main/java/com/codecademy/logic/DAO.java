@@ -6,14 +6,14 @@ import java.util.Optional;
 
 public interface DAO<T> {
 
-        Optional<T> get(long id);
+        Object get(long id);
 
-        List<T> getAll() throws SQLException;
+        List<T> getAll();
 
-        void create(T t) throws SQLException;
+        boolean create(T t);
 
-        void update(T t);
+        boolean update(T t);
 
-        void delete(T t);
+        boolean delete(T t);
 
 }

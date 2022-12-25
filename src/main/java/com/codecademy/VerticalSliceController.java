@@ -13,10 +13,10 @@ import java.sql.SQLException;
 
 public class VerticalSliceController {
     @FXML
-    VBox root;
+    Pane root;
 
     @FXML
-    public void initialize() throws IOException, SQLException {
+    public void initialize() {
         DBConnection dbConnection = new DBConnection();
         OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
 
@@ -24,10 +24,14 @@ public class VerticalSliceController {
         loader.setControllerFactory(newController -> {
             OrganisationOverviewController controller = new OrganisationOverviewController();
             controller.setOrganisationDAO(organisationDAO);
+            controller.setRoot(root);
             return controller;
         });
 
-        Pane newPane = loader.load();
-        root.getChildren().add(newPane);
+        try {
+            root.getChildren().add(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

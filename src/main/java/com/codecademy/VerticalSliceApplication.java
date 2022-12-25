@@ -18,7 +18,7 @@ public class VerticalSliceApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         launch();
     }
 }
