@@ -10,29 +10,31 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root" prefHeight="400.0" prefWidth="689.0" vgap="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codecademy.controller.OrganisationOverviewController">
+
+<GridPane prefHeight="240.0" prefWidth="320.0" vgap="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codecademy.controller.OrganisationOverviewController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+    <RowConstraints vgrow="ALWAYS" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TableView fx:id="tableView" prefHeight="187.0" prefWidth="690.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Organisation OverView">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Organisation Overview">
          <GridPane.margin>
-            <Insets left="20.0" />
+            <Insets />
          </GridPane.margin>
          <font>
             <Font size="24.0" />
          </font>
       </Text>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2">
+      <TableView fx:id="table" GridPane.rowIndex="1" />
+      <HBox spacing="10.0" GridPane.rowIndex="2">
          <children>
-            <Button fx:id="organisationCreateBTN" mnemonicParsing="false" text="Create" />
-            <Button fx:id="organisationDeleteBTN" layoutX="60.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+            <Button mnemonicParsing="false" onAction="#processCreateBTN" text="Create" />
+            <Button mnemonicParsing="false" onAction="#processUpdateBTN" text="Update" />
+            <Button fx:id="deleteBTN" layoutX="60.0" layoutY="10.0" mnemonicParsing="false" onAction="#processDeleteBTN" text="Delete" />
          </children>
          <GridPane.margin>
             <Insets left="10.0" />
@@ -40,6 +42,6 @@
       </HBox>
    </children>
    <padding>
-      <Insets top="10.0" />
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
 </GridPane>

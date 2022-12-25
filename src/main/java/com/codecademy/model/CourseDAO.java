@@ -10,27 +10,26 @@ import java.util.Optional;
 
 public class CourseDAO implements DAO<Course> {
     @Override
-    public Optional<Course> get(long id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Course> getAll() throws SQLException {
+    public Course get(long id) {
         return null;
     }
 
     @Override
-    public void create(Course course) throws SQLException {
-
+    public List<Course> getAll() {
+        return null;
     }
 
     @Override
-    public void update(Course course) {
-
+    public boolean create(Course course) {
+        return false;
     }
 
     @Override
-    public void delete(Course course) {
-
+    public boolean update(Course course) {
+        return false;
+    }
+    @Override
+    public boolean delete(Course course) {
+        return false;
     }
 }

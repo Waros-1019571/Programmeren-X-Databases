@@ -10,4 +10,5 @@ module com.codecademy.codecademy {
     exports com.codecademy.controller;
     opens com.codecademy.controller to javafx.fxml;
     opens com.codecademy.entity to javafx.base;
+    exports com.codecademy.entity;
 }
