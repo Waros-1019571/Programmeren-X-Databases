@@ -3,15 +3,23 @@ package com.codecademy.entity;
 public class VoiceActor {
     private String name;
 
-    public VoiceActor(String name) {
-        this.name = name;
-    }
+    private int Id;
+
+    public VoiceActor() {}
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setVoiceActorName(String name) {
         this.name = name;
+    }
+
+    public void setVoiceActorId(int Id) {
+        this.Id = Id;
+    }
+
+    public int getVoiceActorId() {
+        return Id;
     }
 }
