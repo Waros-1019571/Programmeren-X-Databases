@@ -1,41 +1,42 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Organisation;
+import com.codecademy.logic.DBConnection;
+import com.codecademy.model.CourseDAO;
 import com.codecademy.model.OrganisationDAO;
+import com.codecademy.model.VoiceActorDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class OrganisationOverviewController {
-    @FXML
-    TableView<Organisation> tableView;
-    @FXML
-    Button organisationCreateBTN;
-    @FXML
-    Button organisationDeleteBTN;
-    OrganisationDAO organisationDAO;
-    @FXML
-    Pane root;
+public class CodecademyController {
+    private DBConnection dbConnection = new DBConnection();
+    private OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
+    private CourseDAO courseDAO = new CourseDAO();
+    private VoiceActorDAO voiceActorDAO = new VoiceActorDAO(dbConnection);
 
-    public void setOrganisationDAO(OrganisationDAO organisationDAO) {
-        this.organisationDAO = organisationDAO;
-    }
+    @FXML
+    private TableView<Organisation> tableView;
+    @FXML
+    private Button organisationDeleteBTN;
+    @FXML
+    private Button createBTN;
+    @FXML
+    private TextField nameField;
 
-    public void setRoot(Pane root) {
-        this.root = root;
-    }
-
+    @FXML
     public void initialize() throws SQLException {
+        loadOrganisations();
+    }
+
+    private void loadOrganisations() throws SQLException {
+        tableView.getColumns().clear();
         TableColumn<Organisation, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         List<Organisation> list = organisationDAO.getAll();
@@ -52,8 +53,12 @@ public class OrganisationOverviewController {
         organisationDeleteBTN.setOnAction(event -> {
             processDeleteButton();
         });
-        organisationCreateBTN.setOnAction(event -> {
-            processCreateButton();
+        createBTN.setOnAction(event -> {
+            try {
+                proccessCreateButton();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -68,32 +73,17 @@ public class OrganisationOverviewController {
             Organisation organisation = tableView.getSelectionModel().getSelectedItem();
             try {
                 organisationDAO.delete(organisation);
+                tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
             }
         }
     }
 
-    @FXML
-    private void processCreateButton() {
-        Pane newPane = new Pane();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Organisation-Create-view.fxml"));
-        loader.setControllerFactory(newController -> {
-            OrganisationCreateController controller = new OrganisationCreateController();
-            controller.setRoot(root);
-            controller.setOrganisationDAO(organisationDAO);
-            return controller;
-        });
-
-        try {
-            newPane = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            root.getChildren().clear();
-            root.getChildren().add(newPane);
-        }
+    private void proccessCreateButton() throws SQLException {
+        Organisation organisation = new Organisation();
+        organisation.setName(nameField.getText());
+        organisationDAO.create(organisation);
+        loadOrganisations();
     }
 }

@@ -58,7 +58,6 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
     @Override
     public void create(VoiceActor voiceActor) throws SQLException {
         PreparedStatement statement = null;
-        ResultSet result = null;
 
         try {
             Connection connection = dbConnection.getConnection();

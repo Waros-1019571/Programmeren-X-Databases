@@ -8,13 +8,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class VerticalSliceApplication extends Application {
+public class CodecademyApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/VerticalSlice-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        FXMLLoader fxmlLoader = new FXMLLoader(CodecademyApplication.class.getResource("/Codecademy-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("Codecademy");
         stage.show();
     }
 
