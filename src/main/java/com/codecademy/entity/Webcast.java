@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Webcast {
-    private int duration;
-    private Date publicationDate;
+    private int id;
+    private String title;
+    private String description;
     private String url;
-    private HashMap<Student, Double> progressOfStudent = new HashMap<Student, Double>();
+    private Date publicationDate;
+    private int duration;
     private VoiceActor voiceActor;
+    private Course course;
+    private HashMap<Student, Double> progressOfStudent = new HashMap<Student, Double>();
 
-    public Webcast(int duration, Date publicationDate, String url, VoiceActor voiceActor) {
-        this.duration = duration;
-        this.publicationDate = publicationDate;
-        this.url = url;
-        this.voiceActor = voiceActor;
+    public Webcast() {
     }
 
     public void addStudentProgress (Student student, Double progress) {
@@ -51,5 +51,37 @@ public class Webcast {
 
     public void setVoiceActor(VoiceActor voiceActor) {
         this.voiceActor = voiceActor;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }
