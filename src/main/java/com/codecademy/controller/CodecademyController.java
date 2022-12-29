@@ -29,7 +29,9 @@ public class CodecademyController {
     @FXML
     private Button createOrganisationBTN;
     @FXML
-    private TextField createOrganisationNameField;
+    private Button updateOrganisationBTN;
+    @FXML
+    private TextField organisationNameField;
     @FXML
     private TableView<VoiceActor> voiceActorTableView;
     @FXML
@@ -67,6 +69,13 @@ public class CodecademyController {
         createVoiceActorBTN.setOnAction(event -> {
             try {
                 processCreateVoiceActorBtn();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        updateOrganisationBTN.setOnAction(event -> {
+            try {
+                processUpdateOrganisationBtn();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -142,6 +151,15 @@ public class CodecademyController {
     }
 
     private void processDeleteVoiceActorButton() throws SQLException {
+        if (voiceActorTableView.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Missing voice actor");
+            alert.setHeaderText("Missing voice actor");
+            alert.setContentText("Please select a voice actor to delete");
+            alert.showAndWait();
+            return;
+        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete voice actor");
         alert.setHeaderText("Delete voice actor");
@@ -157,7 +175,7 @@ public class CodecademyController {
 
     private void processCreateOrganisationButton() throws SQLException {
         Organisation organisation = new Organisation();
-        organisation.setName(createOrganisationNameField.getText());
+        organisation.setName(organisationNameField.getText());
         organisationDAO.create(organisation);
         loadOrganisations();
     }
@@ -176,5 +194,21 @@ public class CodecademyController {
             alert.setContentText("Please select an organisation to attach to the voice actor");
             alert.showAndWait();
         }
+    }
+
+    private void processUpdateOrganisationBtn() throws SQLException {
+        if (organisationTableView.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Missing voice actor");
+            alert.setHeaderText("Missing voice actor");
+            alert.setContentText("Please select a voice actor to update");
+            alert.showAndWait();
+            return;
+        }
+
+        Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
+        organisation.setName(organisationNameField.getText());
+        organisationDAO.update(organisation);
+        loadOrganisations();
     }
 }
