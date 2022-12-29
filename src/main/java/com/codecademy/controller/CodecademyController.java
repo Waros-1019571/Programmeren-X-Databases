@@ -25,14 +25,6 @@ public class CodecademyController {
     @FXML
     private TableView<Organisation> organisationTableView;
     @FXML
-    private Button organisationDeleteBTN;
-    @FXML
-    private Button createOrganisationBTN;
-    @FXML
-    private Button updateOrganisationBTN;
-    @FXML
-    private TextField organisationNameField;
-    @FXML
     private TableView<VoiceActor> voiceActorTableView;
     @FXML
     private Button voiceActorDeleteBTN;
@@ -45,20 +37,6 @@ public class CodecademyController {
 
     @FXML
     public void initialize() throws SQLException {
-        organisationDeleteBTN.setOnAction(event -> {
-            try {
-                processDeleteOrganisationButton();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        createOrganisationBTN.setOnAction(event -> {
-            try {
-                processCreateOrganisationButton();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
         voiceActorDeleteBTN.setOnAction(event -> {
             try {
                 processDeleteVoiceActorButton();
@@ -73,20 +51,12 @@ public class CodecademyController {
                 e.printStackTrace();
             }
         });
-        updateOrganisationBTN.setOnAction(event -> {
-            try {
-                processUpdateOrganisationBtn();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
 
         loadOrganisations();
         loadVoiceActors();
     }
 
     private void loadOrganisations() throws SQLException {
-        loadOrganisationsForTableView(organisationTableView);
         loadOrganisationsForTableView(organisationVoiceActorTableView);
     }
 
@@ -136,19 +106,7 @@ public class CodecademyController {
         voiceActorTableView.setItems(data);
     }
 
-    private void processDeleteOrganisationButton() throws SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete organisation");
-        alert.setHeaderText("Delete organisation");
-        alert.setContentText("Are you sure you want to do this?");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
-            organisationDAO.delete(organisation);
-            loadOrganisations();
-        }
-    }
 
     private void processDeleteVoiceActorButton() throws SQLException {
         if (voiceActorTableView.getSelectionModel().getSelectedItem() == null) {
@@ -173,13 +131,6 @@ public class CodecademyController {
         }
     }
 
-    private void processCreateOrganisationButton() throws SQLException {
-        Organisation organisation = new Organisation();
-        organisation.setName(organisationNameField.getText());
-        organisationDAO.create(organisation);
-        loadOrganisations();
-    }
-
     private void processCreateVoiceActorBtn() throws SQLException {
         if (organisationVoiceActorTableView.getSelectionModel().getSelectedItem() != null) {
             VoiceActor voiceActor = new VoiceActor();
@@ -194,21 +145,5 @@ public class CodecademyController {
             alert.setContentText("Please select an organisation to attach to the voice actor");
             alert.showAndWait();
         }
-    }
-
-    private void processUpdateOrganisationBtn() throws SQLException {
-        if (organisationTableView.getSelectionModel().getSelectedItem() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Missing voice actor");
-            alert.setHeaderText("Missing voice actor");
-            alert.setContentText("Please select a voice actor to update");
-            alert.showAndWait();
-            return;
-        }
-
-        Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
-        organisation.setName(organisationNameField.getText());
-        organisationDAO.update(organisation);
-        loadOrganisations();
     }
 }
