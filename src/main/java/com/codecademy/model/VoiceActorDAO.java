@@ -26,12 +26,13 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM VOICE_ACTOR");
+            result = statement.executeQuery("SELECT ID, Name, OrganisationID FROM VOICE_ACTOR");
 
             while (result.next()) {
                 VoiceActor voiceActor = new VoiceActor();
-                voiceActor.setVoiceActorId(result.getInt(1));
-                voiceActor.setVoiceActorName(result.getString(2));
+                voiceActor.setId(result.getInt(1));
+                voiceActor.setName(result.getString(2));
+                voiceActor.setOrganisationId(result.getInt(3));
                 voiceActorList.add(voiceActor);
             }
 
@@ -61,9 +62,11 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO VOICE_ACTOR (Name) VALUES(?)");
+            statement = connection.prepareStatement("INSERT INTO VOICE_ACTOR (Name, OrganisationID) VALUES(?,?)");
             String name = voiceActor.getName();
             statement.setString(1, name);
+            int organisationId = voiceActor.getOrganisationId();
+            statement.setInt(2, organisationId);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -84,7 +87,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("SELECT count(*) FROM VOICE_ACTOR WHERE ID = ?");
-            statement.setInt(1, voiceActor.getVoiceActorId());
+            statement.setInt(1, voiceActor.getId());
 
             result = statement.executeQuery();
 
@@ -93,7 +96,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             } else {
                 statement = connection.prepareStatement("UPDATE VOICE_ACTOR SET Name = ? WHERE ID = ?");
                 statement.setString(1, voiceActor.getName());
-                statement.setInt(2, voiceActor.getVoiceActorId());
+                statement.setInt(2, voiceActor.getId());
                 int rowsAffected = statement.executeUpdate();
                 if (rowsAffected == 0) {
                     throw new SQLException("Update failed: no rows affected.");
@@ -131,7 +134,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("DELETE FROM VOICE_ACTOR WHERE ID = ?");
-            statement.setInt(1, voiceActor.getVoiceActorId());
+            statement.setInt(1, voiceActor.getId());
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
                 return true;

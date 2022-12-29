@@ -1,25 +1,35 @@
 package com.codecademy.entity;
 
 public class VoiceActor {
+    private int id;
     private String name;
+    private int organisationId;
 
-    private int Id;
+    public VoiceActor() {
 
-    public VoiceActor() {}
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int Id) {
+        this.id = Id;
+    }
 
     public String getName() {
         return name;
     }
 
-    public void setVoiceActorName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setVoiceActorId(int Id) {
-        this.Id = Id;
+    public int getOrganisationId() {
+        return organisationId;
     }
 
-    public int getVoiceActorId() {
-        return Id;
+    public void setOrganisationId(int organisationId) {
+        this.organisationId = organisationId;
     }
 }

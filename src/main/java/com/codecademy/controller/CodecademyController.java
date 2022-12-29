@@ -1,6 +1,7 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Organisation;
+import com.codecademy.entity.VoiceActor;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.CourseDAO;
 import com.codecademy.model.OrganisationDAO;
@@ -22,68 +23,158 @@ public class CodecademyController {
     private VoiceActorDAO voiceActorDAO = new VoiceActorDAO(dbConnection);
 
     @FXML
-    private TableView<Organisation> tableView;
+    private TableView<Organisation> organisationTableView;
     @FXML
     private Button organisationDeleteBTN;
     @FXML
-    private Button createBTN;
+    private Button createOrganisationBTN;
     @FXML
-    private TextField nameField;
+    private TextField createOrganisationNameField;
+    @FXML
+    private TableView<VoiceActor> voiceActorTableView;
+    @FXML
+    private Button voiceActorDeleteBTN;
+    @FXML
+    private TableView<Organisation> organisationVoiceActorTableView;
+    @FXML
+    private Button createVoiceActorBTN;
+    @FXML
+    private TextField createVoiceActorNameField;
 
     @FXML
     public void initialize() throws SQLException {
+        organisationDeleteBTN.setOnAction(event -> {
+            try {
+                processDeleteOrganisationButton();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        createOrganisationBTN.setOnAction(event -> {
+            try {
+                processCreateOrganisationButton();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        voiceActorDeleteBTN.setOnAction(event -> {
+            try {
+                processDeleteVoiceActorButton();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        createVoiceActorBTN.setOnAction(event -> {
+            try {
+                processCreateVoiceActorBtn();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
         loadOrganisations();
+        loadVoiceActors();
     }
 
     private void loadOrganisations() throws SQLException {
+        loadOrganisationsForTableView(organisationTableView);
+        loadOrganisationsForTableView(organisationVoiceActorTableView);
+    }
+
+    private void loadOrganisationsForTableView(TableView<Organisation> tableView) throws SQLException {
+        List<Organisation> list = organisationDAO.getAll();
         tableView.getColumns().clear();
+
+        TableColumn<Organisation, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
+        tableView.getColumns().add(idCol);
+
         TableColumn<Organisation, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        List<Organisation> list = organisationDAO.getAll();
         tableView.getColumns().add(nameCol);
 
         if (list == null || list.size() == 0) {
-            System.out.println("list is empty");
+            System.out.println("Organisation list is empty");
             return;
         }
 
         ObservableList<Organisation> data = FXCollections.observableArrayList(list);
         tableView.setItems(data);
-
-        organisationDeleteBTN.setOnAction(event -> {
-            processDeleteButton();
-        });
-        createBTN.setOnAction(event -> {
-            try {
-                proccessCreateButton();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
-    private void processDeleteButton() {
+    private void loadVoiceActors() throws SQLException {
+        List<VoiceActor> list = voiceActorDAO.getAll();
+        voiceActorTableView.getColumns().clear();
+
+        TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        voiceActorTableView.getColumns().add(idCol);
+
+        TableColumn<VoiceActor, Object> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        voiceActorTableView.getColumns().add(nameCol);
+
+        TableColumn<VoiceActor, Integer> organisationIdCol = new TableColumn<>("Organisation ID");
+        organisationIdCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
+        voiceActorTableView.getColumns().add(organisationIdCol);
+
+        if (list == null || list.size() == 0) {
+            System.out.println("Voice actor list is empty");
+            return;
+        }
+
+        ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
+        voiceActorTableView.setItems(data);
+    }
+
+    private void processDeleteOrganisationButton() throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Look, a Confirmation Dialog");
+        alert.setTitle("Delete organisation");
+        alert.setHeaderText("Delete organisation");
         alert.setContentText("Are you sure you want to do this?");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            Organisation organisation = tableView.getSelectionModel().getSelectedItem();
-            try {
-                organisationDAO.delete(organisation);
-                tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        if (result.get() == ButtonType.OK) {
+            Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
+            organisationDAO.delete(organisation);
+            loadOrganisations();
         }
     }
 
-    private void proccessCreateButton() throws SQLException {
+    private void processDeleteVoiceActorButton() throws SQLException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete voice actor");
+        alert.setHeaderText("Delete voice actor");
+        alert.setContentText("Are you sure you want to do this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            VoiceActor voiceActor = voiceActorTableView.getSelectionModel().getSelectedItem();
+            voiceActorDAO.delete(voiceActor);
+            loadVoiceActors();
+        }
+    }
+
+    private void processCreateOrganisationButton() throws SQLException {
         Organisation organisation = new Organisation();
-        organisation.setName(nameField.getText());
+        organisation.setName(createOrganisationNameField.getText());
         organisationDAO.create(organisation);
         loadOrganisations();
+    }
+
+    private void processCreateVoiceActorBtn() throws SQLException {
+        if (organisationVoiceActorTableView.getSelectionModel().getSelectedItem() != null) {
+            VoiceActor voiceActor = new VoiceActor();
+            voiceActor.setName(createVoiceActorNameField.getText());
+            voiceActor.setOrganisationId(organisationVoiceActorTableView.getSelectionModel().getSelectedItem().getOrganisationId());
+            voiceActorDAO.create(voiceActor);
+            loadVoiceActors();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Missing organisation");
+            alert.setHeaderText("Missing organisation");
+            alert.setContentText("Please select an organisation to attach to the voice actor");
+            alert.showAndWait();
+        }
     }
 }
