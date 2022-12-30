@@ -1,11 +1,14 @@
 package com.codecademy.controller;
 
+import com.codecademy.entity.Course;
 import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
+import com.codecademy.entity.Webcast;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.CourseDAO;
 import com.codecademy.model.OrganisationDAO;
 import com.codecademy.model.VoiceActorDAO;
+import com.codecademy.model.WebcastDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +16,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +28,7 @@ public class CodecademyController {
     private OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
     private CourseDAO courseDAO = new CourseDAO();
     private VoiceActorDAO voiceActorDAO = new VoiceActorDAO(dbConnection);
+    private WebcastDAO webcastDAO = new WebcastDAO(dbConnection);
 
     @FXML
     private TableView<Organisation> organisationTableView;
@@ -42,6 +50,23 @@ public class CodecademyController {
     private Button createVoiceActorBTN;
     @FXML
     private TextField createVoiceActorNameField;
+
+    @FXML
+    private TableView<Course> webcastCoursesView;
+    @FXML
+    private TableView<VoiceActor> webcastVoiceActorsView;
+    @FXML
+    private TextField webcastTitleField;
+    @FXML
+    private TextField webcastDescriptionField;
+    @FXML
+    private TextField webcastURLField;
+    @FXML
+    private TextField webcastPublicationDateField;
+    @FXML
+    private TextField webcastDurationField;
+    @FXML
+    private Button addWebcastBTN;
 
     @FXML
     public void initialize() throws SQLException {
@@ -77,6 +102,13 @@ public class CodecademyController {
             try {
                 processUpdateOrganisationBtn();
             } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        addWebcastBTN.setOnAction(event -> {
+            try {
+                processAddWebcastBtn();
+            } catch (SQLException | ParseException e) {
                 e.printStackTrace();
             }
         });
@@ -134,6 +166,29 @@ public class CodecademyController {
 
         ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
         voiceActorTableView.setItems(data);
+
+        loadVoiceActorsForWebcast();
+    }
+
+    private void loadVoiceActorsForWebcast() throws SQLException {
+        List<VoiceActor> list = voiceActorDAO.getAll();
+        webcastVoiceActorsView.getColumns().clear();
+
+        TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        webcastVoiceActorsView.getColumns().add(idCol);
+
+        TableColumn<VoiceActor, Object> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        webcastVoiceActorsView.getColumns().add(nameCol);
+
+        if (list == null || list.size() == 0) {
+            System.out.println("Voice actor list is empty");
+            return;
+        }
+
+        ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
+        webcastVoiceActorsView.setItems(data);
     }
 
     private void processDeleteOrganisationButton() throws SQLException {
@@ -210,5 +265,32 @@ public class CodecademyController {
         organisation.setName(organisationNameField.getText());
         organisationDAO.update(organisation);
         loadOrganisations();
+    }
+
+    private Date getWebcastDate() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.parse(webcastPublicationDateField.getText());
+    }
+
+    private void processAddWebcastBtn() throws SQLException, ParseException {
+        // TODO: Get courses inside the table view and bind their ID like we do with voice actors
+        VoiceActor voiceActor = webcastVoiceActorsView.getSelectionModel().getSelectedItem();
+        if (webcastVoiceActorsView.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Missing voice actor");
+            alert.setHeaderText("Missing voice actor");
+            alert.setContentText("Please select a voice actor to attach to the webcast");
+            alert.showAndWait();
+        } else {
+            Webcast webcast = new Webcast();
+            webcast.setCourse(new Course(1, null, null, null, null)); // TODO: Course from table view
+            webcast.setVoiceActor(voiceActor);
+            webcast.setTitle(webcastTitleField.getText());
+            webcast.setDescription(webcastDescriptionField.getText());
+            webcast.setUrl(webcastURLField.getText());
+            webcast.setPublicationDate(getWebcastDate());
+            webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
+            webcastDAO.create(webcast);
+        }
     }
 }
