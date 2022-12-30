@@ -175,12 +175,6 @@
                                  </GridPane.margin>
                               </HBox>
                               <HBox prefHeight="27.0" prefWidth="560.0" spacing="10.0" GridPane.columnIndex="1">
-                                 <children>
-                                    <Label text="Name" />
-                                    <TextField fx:id="organisationNameField1" />
-                                    <Button fx:id="createOrganisationBTN1" mnemonicParsing="false" text="Create" />
-                                    <Button fx:id="updateOrganisationBTN1" mnemonicParsing="false" text="Update" />
-                                 </children>
                                  <padding>
                                     <Insets left="1.0" />
                                  </padding>

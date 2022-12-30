@@ -52,6 +52,11 @@ public class CodecademyController {
     private TextField createVoiceActorNameField;
 
     @FXML
+    private TableView<Webcast> webcastTableView;
+    @FXML
+    private Button webcastDeleteBTN;
+
+    @FXML
     private TableView<Course> webcastCoursesView;
     @FXML
     private TableView<VoiceActor> webcastVoiceActorsView;
@@ -112,9 +117,17 @@ public class CodecademyController {
                 e.printStackTrace();
             }
         });
+        webcastDeleteBTN.setOnAction(event -> {
+            try {
+                processDeleteWebcastBtn();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
 
         loadOrganisations();
         loadVoiceActors();
+        loadWebcasts();
     }
 
     private void loadOrganisations() throws SQLException {
@@ -124,6 +137,7 @@ public class CodecademyController {
 
     private void loadOrganisationsForTableView(TableView<Organisation> tableView) throws SQLException {
         List<Organisation> list = organisationDAO.getAll();
+        tableView.getItems().clear();
         tableView.getColumns().clear();
 
         TableColumn<Organisation, Integer> idCol = new TableColumn<>("ID");
@@ -145,6 +159,7 @@ public class CodecademyController {
 
     private void loadVoiceActors() throws SQLException {
         List<VoiceActor> list = voiceActorDAO.getAll();
+        voiceActorTableView.getItems().clear();
         voiceActorTableView.getColumns().clear();
 
         TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
@@ -172,6 +187,7 @@ public class CodecademyController {
 
     private void loadVoiceActorsForWebcast() throws SQLException {
         List<VoiceActor> list = voiceActorDAO.getAll();
+        webcastVoiceActorsView.getItems().clear();
         webcastVoiceActorsView.getColumns().clear();
 
         TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
@@ -189,6 +205,44 @@ public class CodecademyController {
 
         ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
         webcastVoiceActorsView.setItems(data);
+    }
+
+    private void loadWebcasts() throws SQLException {
+        List<Webcast> list = webcastDAO.getAll();
+        webcastTableView.getItems().clear();
+        webcastTableView.getColumns().clear();
+
+        TableColumn<Webcast, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        webcastTableView.getColumns().add(idCol);
+
+        TableColumn<Webcast, String> titleCol = new TableColumn<>("Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        webcastTableView.getColumns().add(titleCol);
+
+        TableColumn<Webcast, String> descriptionCol = new TableColumn<>("Description");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        webcastTableView.getColumns().add(descriptionCol);
+
+        TableColumn<Webcast, String> urlCol = new TableColumn<>("URL");
+        urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+        webcastTableView.getColumns().add(urlCol);
+
+        TableColumn<Webcast, Date> publicationDateCol = new TableColumn<>("Publication date");
+        urlCol.setCellValueFactory(new PropertyValueFactory<>("publicationDate"));
+        webcastTableView.getColumns().add(publicationDateCol);
+
+        TableColumn<Webcast, Integer> durationCol = new TableColumn<>("Duration");
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        webcastTableView.getColumns().add(durationCol);
+
+        if (list == null || list.size() == 0) {
+            System.out.println("Webcast list is empty");
+            return;
+        }
+
+        ObservableList<Webcast> data = FXCollections.observableArrayList(list);
+        webcastTableView.setItems(data);
     }
 
     private void processDeleteOrganisationButton() throws SQLException {
@@ -291,6 +345,30 @@ public class CodecademyController {
             webcast.setPublicationDate(getWebcastDate());
             webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
             webcastDAO.create(webcast);
+            loadWebcasts();
+        }
+    }
+
+    private void processDeleteWebcastBtn() throws SQLException {
+        Webcast webcast = webcastTableView.getSelectionModel().getSelectedItem();
+        if (webcast == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Missing webcast");
+            alert.setHeaderText("Missing webcast");
+            alert.setContentText("Please select a webcast to delete");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete webcast");
+        alert.setHeaderText("Delete webcast " + webcast.getTitle());
+        alert.setContentText("Are you sure you want to do this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            webcastDAO.delete(webcast);
+            loadWebcasts();
         }
     }
 }

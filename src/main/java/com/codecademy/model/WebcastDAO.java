@@ -24,15 +24,17 @@ public class WebcastDAO implements DAO<Webcast> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("SELECT ID, Name, OrganisationID FROM VOICE_ACTOR WHERE ID = (?)");
+            statement = connection.prepareStatement("SELECT ID, Name, OrganisationID FROM VOICE_ACTOR WHERE ID = ?");
             statement.setInt(1, voiceActorID);
             result = statement.executeQuery();
 
-            VoiceActor voiceActor = new VoiceActor();
-            voiceActor.setId(result.getInt(1));
-            voiceActor.setName(result.getString(2));
-            voiceActor.setOrganisationId(result.getInt(3));
-            webcast.setVoiceActor(voiceActor);
+            if (result.next()) {
+                VoiceActor voiceActor = new VoiceActor();
+                voiceActor.setId(result.getInt(1));
+                voiceActor.setName(result.getString(2));
+                voiceActor.setOrganisationId(result.getInt(3));
+                webcast.setVoiceActor(voiceActor);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -149,13 +151,6 @@ public class WebcastDAO implements DAO<Webcast> {
                     throw new RuntimeException(e);
                 }
             }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
@@ -172,9 +167,6 @@ public class WebcastDAO implements DAO<Webcast> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (connection != null) {
-                connection.close();
-            }
             if (statement != null) {
                 statement.close();
             }
