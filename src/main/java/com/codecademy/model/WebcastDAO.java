@@ -8,6 +8,7 @@ import com.codecademy.logic.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class WebcastDAO implements DAO<Webcast> {
@@ -96,17 +97,92 @@ public class WebcastDAO implements DAO<Webcast> {
 
     @Override
     public void create(Webcast webcast) throws SQLException {
-        // TODO
+        PreparedStatement statement = null;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("INSERT INTO WEBCAST (CourseID, VoiceActorID, Title, Description, URL, PublicationDate, Duration) VALUES(?,?,?,?,?,?,?)");
+            statement.setInt(1, webcast.getCourse().getCourseId());
+            statement.setInt(2, webcast.getVoiceActor().getId());
+            statement.setString(3, webcast.getTitle());
+            statement.setString(4, webcast.getDescription());
+            statement.setString(5, webcast.getUrl());
+            statement.setDate(6, new Date(webcast.getPublicationDate().getTime())); // util date to sql date
+            statement.setInt(7, webcast.getDuration());
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
     }
 
     @Override
     public void update(Webcast webcast) {
-        // TODO
+        Connection connection = dbConnection.getConnection();
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("UPDATE WEBCAST SET CourseID = ?, VoiceActorID = ?, Title = ?, Description = ?, URL = ?, PublicationDate = ?, Duration = ? WHERE ID = ?");
+            statement.setInt(1, webcast.getCourse().getCourseId());
+            statement.setInt(2, webcast.getVoiceActor().getId());
+            statement.setString(3, webcast.getTitle());
+            statement.setString(4, webcast.getDescription());
+            statement.setString(5, webcast.getUrl());
+            statement.setDate(6, new Date(webcast.getPublicationDate().getTime())); // util date to sql date
+            statement.setInt(7, webcast.getDuration());
+            statement.setInt(8, webcast.getId());
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new NoSuchElementException("Update failed: no rows affected.");
+            }
+        } catch (SQLException | NoSuchElementException e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @Override
     public boolean delete(Webcast webcast) throws SQLException {
-        // TODO
-        return false;
+        Connection connection = dbConnection.getConnection();
+        PreparedStatement statement = null;
+        int rowsDeleted = 0;
+
+        try {
+            statement = connection.prepareStatement("DELETE FROM WEBCAST WHERE ID = ?");
+            statement.setInt(1, webcast.getId());
+            rowsDeleted = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+        }
+
+        if (rowsDeleted == 0) {
+            return false;
+        }
+        return true;
     }
 }
