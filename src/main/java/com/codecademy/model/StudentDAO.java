@@ -92,8 +92,16 @@ public class StudentDAO implements DAO<Student> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO STUDENT (email) VALUES(?)");
+            statement = connection.prepareStatement("INSERT INTO STUDENT (email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, student.getEmail());
+            statement.setString(2, student.getName());
+            statement.setDate(3, (Date) student.getBirthDate());
+            statement.setString(4, student.getGender());
+            statement.setString(5, student.getStreet());
+            statement.setString(6, student.getPostalCode());
+            statement.setString(7, student.getHouseNumber());
+            statement.setString(8, student.getCity());
+            statement.setString(9, student.getCountry());
             isCreated = (statement.executeUpdate() > 0);
 
         } catch (SQLException e) {
@@ -111,7 +119,7 @@ public class StudentDAO implements DAO<Student> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE STUDENT SET name = ?, name = ?, WHERE email = ?");
+            statement = connection.prepareStatement("UPDATE STUDENT SET name = ?, birthDate = ?, gender = ?, street = ?, postalCode = ?, houseNumber = ?, city = ?, country = ?  WHERE email = ?");
             statement.setString(1, student.getEmail());
             statement.setString(2, student.getName());
             statement.setDate(3, (Date) student.getBirthDate());
@@ -121,9 +129,7 @@ public class StudentDAO implements DAO<Student> {
             statement.setString(7, student.getHouseNumber());
             statement.setString(8, student.getCity());
             statement.setString(9, student.getCountry());
-            
-            
-            
+
             isUpdated = statement.executeUpdate() > 0;
 
         } catch (SQLException | NoSuchElementException e) {
