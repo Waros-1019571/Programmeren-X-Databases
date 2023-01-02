@@ -5,34 +5,36 @@
  */
 package com.codecademy.entity;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 /**
  *
  * @author Daan
  */
 public class Certificate {
 
-    private int certificateId;
-    private double grade;
+    private SimpleIntegerProperty certificateId;
+    private SimpleDoubleProperty grade;
 
-    public Certificate(int certificateId, double grade) {
-        this.certificateId = certificateId;
-        this.grade = grade;
+    public Certificate() {
+        this.certificateId = new SimpleIntegerProperty();
+        this.grade = new SimpleDoubleProperty();
     }
 
     public int getCertificateId() {
-        return certificateId;
+        return certificateId.get();
     }
 
-    public void setCertificateId(int newCertificateId) {
-        this.certificateId = newCertificateId;
+    public void setCertificateId(int certificateId) {
+        this.certificateId.set(certificateId);
     }
 //
 
     public double getGrade() {
-        return grade;
+        return grade.get();
     }
 
-    public void setGrade(double newGrade) {
-        this.grade = newGrade;
+    public void setGrade(double grade) {
+        this.grade.set(grade);
     }
 }
