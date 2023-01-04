@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class VerticalSliceApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("VerticalSlice-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(CodecademyApplication.class.getResource("VerticalSlice-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");
         stage.setScene(scene);
