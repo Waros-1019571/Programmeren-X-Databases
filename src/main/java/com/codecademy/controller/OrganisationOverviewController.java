@@ -1,6 +1,6 @@
 package com.codecademy.controller;
 
-import com.codecademy.HelloApplication;
+import com.codecademy.CodecademyApplication;
 import com.codecademy.entity.Organisation;
 import com.codecademy.model.OrganisationDAO;
 import javafx.collections.FXCollections;
@@ -26,7 +26,7 @@ public class OrganisationOverviewController {
     OrganisationFormController controller;
 
     public OrganisationOverviewController() {
-        this.formLoader = new FXMLLoader(HelloApplication.class.getResource("Organisation-Form-view.fxml"));
+        this.formLoader = new FXMLLoader(CodecademyApplication.class.getResource("Organisation-Form-view.fxml"));
         this.controller = new OrganisationFormController();
     }
 

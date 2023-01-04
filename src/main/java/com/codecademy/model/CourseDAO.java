@@ -1,7 +1,6 @@
 package com.codecademy.model;
 
 import com.codecademy.entity.Course;
-import com.codecademy.entity.Organisation;
 import com.codecademy.logic.DAO;
 
 import java.sql.SQLException;
