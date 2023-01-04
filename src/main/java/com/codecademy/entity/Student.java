@@ -7,111 +7,119 @@ package com.codecademy.entity;
 
 import java.util.Date;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleObjectProperty;
 /**
  *
  * @author Daan
  */
 public class Student {
 
-    private String email;
-    private String name;
-    private Date birthDate;
-    private String gender;
-    private String street;
-    private String postalCode;
-    private String houseNumber;
-    private String city;
-    private String country;
+    private SimpleStringProperty email;
+    private SimpleStringProperty name;
+    private SimpleObjectProperty birthDate;
+    private SimpleStringProperty gender;
+    private SimpleStringProperty street;
+    private SimpleStringProperty postalCode;
+    private SimpleStringProperty houseNumber;
+    private SimpleStringProperty city;
+    private SimpleStringProperty country;
 
-    public Student(String email, String name, Date birthDate, String gender, String street, String postalCode, String houseNumber, String city, String country) {
-        this.email = email;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.street = street;
-        this.postalCode = postalCode;
-        this.houseNumber = houseNumber;
-        this.city = city;
-        this.country = country;
+    public Student() {
+        this.email = new SimpleStringProperty();
+        this.name = new SimpleStringProperty();
+        this.birthDate = new SimpleObjectProperty();
+        this.gender = new SimpleStringProperty();
+        this.street = new SimpleStringProperty();
+        this.postalCode = new SimpleStringProperty();
+        this.houseNumber = new SimpleStringProperty();
+        this.city = new SimpleStringProperty();
+        this.country = new SimpleStringProperty();
     }
 
     public String getEmail() {
-        return email;
+        return email.get();
     }
 
-    public void setEmail(String newEmail) {
-        this.email = newEmail;
+    public void setEmail(String email) {
+        this.email.set(email);
     }
 //
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
-    public void setName(String newName) {
-        this.name = newName;
+    public void setName(String name) {
+        this.name.set(name);
     }
 //
 
     public Date getBirthDate() {
-        return birthDate;
+        return (Date) birthDate.get();
     }
 
-    public void setBirthDate(Date newBirthDate) {
-        this.birthDate = newBirthDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate.set(birthDate);
     }
 //
 
     public String getGender() {
-        return gender;
+        return gender.get();
     }
 
-    public void setGender(String newGender) {
-        this.gender = newGender;
+    public void setGender(String gender) {
+        this.gender.set(gender);
     }
 
 //
     public String getStreet() {
-        return street;
+        return street.get();
     }
 
-    public void setStreet(String newStreet) {
-        this.street = newStreet;
+    public void setStreet(String street) {
+        this.street.set(street);
     }
 
 //
     public String getPostalCode() {
-        return postalCode;
+        return postalCode.get();
     }
 
-    public void setPostalCode(String newPostalCode) {
-        this.postalCode = newPostalCode;
+    public void setPostalCode(String postalCode) {
+        this.postalCode.set(postalCode);
     }
 
 //
     public String getHouseNumber() {
-        return houseNumber;
+        return houseNumber.get();
     }
 
-    public void setHouseNumber(String newHouseNumber) {
-        this.houseNumber = newHouseNumber;
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber.set(houseNumber);
     }
 
 //
     public String getCity() {
-        return city;
+        return city.get();
     }
 
-    public void setCity(String newCity) {
-        this.city = newCity;
+    public void setCity(String city) {
+        this.city.set(city);
     }
 
 //
     public String getCountry() {
-        return country;
+        return country.get();
     }
 
-    public void setCountry(String newCountry) {
-        this.country = newCountry;
+    public void setCountry(String country) {
+        this.country.set(country);
+    }
+
+    private static class birthDate {
+
+        public birthDate() {
+        }
     }
 }

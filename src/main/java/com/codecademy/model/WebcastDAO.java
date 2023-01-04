@@ -59,7 +59,7 @@ public class WebcastDAO implements DAO<Webcast> {
     }
 
     @Override
-    public List<Webcast> getAll() throws SQLException {
+    public List<Webcast> getAll() {
         Statement statement = null;
         ResultSet result = null;
         ArrayList<Webcast> webcastList = new ArrayList<>();
@@ -86,19 +86,14 @@ public class WebcastDAO implements DAO<Webcast> {
             e.printStackTrace();
 
         } finally {
-            if (result != null) {
-                result.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement,result);
         }
         return webcastList;
     }
 
     @Override
-    public void create(Webcast webcast) throws SQLException {
+    public boolean create(Webcast webcast) {
+        boolean result = false;
         PreparedStatement statement = null;
 
         try {
@@ -112,19 +107,25 @@ public class WebcastDAO implements DAO<Webcast> {
             statement.setDate(6, new Date(webcast.getPublicationDate().getTime())); // util date to sql date
             statement.setInt(7, webcast.getDuration());
             statement.execute();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new NoSuchElementException("Update failed: no rows affected.");
+            }
+            result = true;
+
 
         } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement);
         }
+        return result;
     }
 
     @Override
-    public void update(Webcast webcast) {
+    public boolean update(Webcast webcast) {
+        boolean result = false;
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
         try {
@@ -141,21 +142,17 @@ public class WebcastDAO implements DAO<Webcast> {
             if (rowsAffected == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
             }
+            result = true;
         } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            closeRequest(statement);
         }
+        return result;
     }
 
     @Override
-    public boolean delete(Webcast webcast) throws SQLException {
+    public boolean delete(Webcast webcast) {
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
         int rowsDeleted = 0;
@@ -167,14 +164,29 @@ public class WebcastDAO implements DAO<Webcast> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement);
         }
 
         if (rowsDeleted == 0) {
             return false;
         }
         return true;
+    }
+
+    private void closeRequest(Statement statement, ResultSet resultSet) {
+        closeRequest(statement);
+        try {
+            resultSet.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeRequest(Statement statement) {
+        try {
+            statement.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }

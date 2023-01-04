@@ -18,7 +18,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
     }
 
     @Override
-    public List<VoiceActor> getAll() throws SQLException {
+    public List<VoiceActor> getAll() {
         Statement statement = null;
         ResultSet result = null;
         ArrayList<VoiceActor> voiceActorList = new ArrayList<>();
@@ -40,13 +40,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             e.printStackTrace();
 
         } finally {
-            if (result != null) {
-                result.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement, result);
         }
         return voiceActorList;
     }
@@ -57,8 +51,9 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
     }
 
     @Override
-    public void create(VoiceActor voiceActor) throws SQLException {
+    public boolean create(VoiceActor voiceActor) {
         PreparedStatement statement = null;
+        boolean result = false;
 
         try {
             Connection connection = dbConnection.getConnection();
@@ -68,21 +63,26 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             int organisationId = voiceActor.getOrganisationId();
             statement.setInt(2, organisationId);
             statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Update failed: no rows affected.");
+            }
+            result = true;
 
         } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement);
         }
+        return false;
     }
 
     @Override
-    public void update(VoiceActor voiceActor) {
+    public boolean update(VoiceActor voiceActor) {
         PreparedStatement statement = null;
         ResultSet result = null;
+        boolean isUpdated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
@@ -102,34 +102,23 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
                     throw new SQLException("Update failed: no rows affected.");
                 }
             }
+            isUpdated = true;
 
         } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();
 
         } finally {
-            if (result != null) {
-                try {
-                    result.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            closeRequest(statement, result);
         }
+        return isUpdated;
     }
 
     @Override
-    public boolean delete(VoiceActor voiceActor) throws SQLException {
+    public boolean delete(VoiceActor voiceActor) {
         PreparedStatement statement = null;
         ResultSet result = null;
         ArrayList<VoiceActor> voiceActorList = new ArrayList<>();
+        boolean isDeleted = false;
 
         try {
             Connection connection = dbConnection.getConnection();
@@ -137,21 +126,32 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             statement.setInt(1, voiceActor.getId());
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                return true;
+                isDeleted = true;
             }
 
         } catch(SQLException e) {
             e.printStackTrace();
 
         } finally {
-            if (result != null) {
-                result.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+           closeRequest(statement, result);
         }
-        return false;
+        return isDeleted;
+    }
+
+    private void closeRequest(Statement statement, ResultSet resultSet) {
+        closeRequest(statement);
+        try {
+            resultSet.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeRequest(Statement statement) {
+        try {
+            statement.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }

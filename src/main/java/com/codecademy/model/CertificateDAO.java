@@ -1,6 +1,6 @@
 package com.codecademy.model;
 
-import com.codecademy.entity.Organisation;
+import com.codecademy.entity.Certificate;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
@@ -9,30 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class OrganisationDAO implements DAO<Organisation> {
+public class CertificateDAO implements DAO<Certificate> {
+
     private final DBConnection dbConnection;
 
-    public OrganisationDAO(DBConnection dbConnection) {
+    public CertificateDAO(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
     }
 
     @Override
-    public List<Organisation> getAll() {
+    public List<Certificate> getAll() {
         Statement statement = null;
         ResultSet result = null;
-        ArrayList<Organisation> organisationList = null;
+        ArrayList<Certificate> certificateList = null;
 
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM ORGANISATION");
-            organisationList = new ArrayList<>();
+            result = statement.executeQuery("SELECT * FROM CERTIFICATE");
+            certificateList = new ArrayList<>();
 
             while (result.next()) {
-                Organisation organisation = new Organisation();
-                organisation.setOrganisationId(result.getInt(1));
-                organisation.setName(result.getString(2));
-                organisationList.add(organisation);
+                Certificate certificate = new Certificate();
+                certificate.setCertificateId(result.getInt(1));
+                certificate.setGrade(result.getDouble(2));
+                certificateList.add(certificate);
             }
 
         } catch (SQLException e) {
@@ -41,24 +42,24 @@ public class OrganisationDAO implements DAO<Organisation> {
         } finally {
             closeRequest(statement, result);
         }
-        return organisationList;
+        return certificateList;
     }
 
     @Override
-    public Organisation get(long id) {
+    public Certificate get(long id) {
         Statement statement = null;
         ResultSet result = null;
-        Organisation organisation = null;
+        Certificate certificate = null;
 
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM ORGANISATION WHERE id = ?");
+            result = statement.executeQuery("SELECT * FROM CERTIFICATE WHERE id = ?");
 
             if (result.next()) {
-                organisation = new Organisation();
-                organisation.setOrganisationId(result.getInt(1));
-                organisation.setName(result.getString(2));
+                certificate = new Certificate();
+                certificate.setCertificateId(result.getInt(1));
+                certificate.setGrade(result.getDouble(2));
             }
 
         } catch (SQLException e) {
@@ -67,38 +68,38 @@ public class OrganisationDAO implements DAO<Organisation> {
         } finally {
             closeRequest(statement, result);
         }
-        return organisation;
+        return certificate;
     }
 
     @Override
-    public boolean create(Organisation organisation) {
+    public boolean create(Certificate certificate) {
         PreparedStatement statement = null;
         boolean isCreated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO ORGANISATION (Name) VALUES(?)");
-                statement.setString(1, organisation.getName());
-                isCreated = (statement.executeUpdate() > 0);
+            statement = connection.prepareStatement("INSERT INTO CERTIFICATE (Id) VALUES(?)");
+            statement.setInt(1, certificate.getCertificateId());
+            isCreated = (statement.executeUpdate() > 0);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                closeRequest(statement);
-            }
-            return isCreated;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+        return isCreated;
     }
 
     @Override
-    public boolean update(Organisation organisation) {
+    public boolean update(Certificate certificate) {
         PreparedStatement statement = null;
         boolean isUpdated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE Organisation SET Name = ? WHERE ID = ?");
-            statement.setString(1, organisation.getName());
-            statement.setInt(2, organisation.getOrganisationId());
+            statement = connection.prepareStatement("UPDATE CERTIFICATE SET Grade = ? WHERE Id = ?");
+            statement.setDouble(1, certificate.getGrade());
+            statement.setInt(2, certificate.getCertificateId());
             isUpdated = statement.executeUpdate() > 0;
 
         } catch (SQLException | NoSuchElementException e) {
@@ -111,17 +112,17 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public boolean delete(Organisation organisation)  {
+    public boolean delete(Certificate certificate) {
         PreparedStatement statement = null;
         boolean isDeleted = false;
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("DELETE FROM ORGANISATION WHERE ID = ?");
-            statement.setInt(1, organisation.getOrganisationId());
+            statement = connection.prepareStatement("DELETE FROM Certificate WHERE Id = ?");
+            statement.setInt(1, certificate.getCertificateId());
             isDeleted = statement.executeUpdate() > 0;
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeRequest(statement);
