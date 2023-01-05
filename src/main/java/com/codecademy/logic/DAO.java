@@ -1,5 +1,7 @@
 package com.codecademy.logic;
 
+import com.codecademy.entity.Organisation;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
