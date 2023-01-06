@@ -42,7 +42,7 @@
                   <Label text="Name" />
                   <TextField fx:id="organisationNameField" />
                   <Button mnemonicParsing="false" onAction="#processCreateBTN" text="Create" />
-                  <Button mnemonicParsing="false" onAction="#processUpdateBtn" text="Update" />
+                  <Button mnemonicParsing="false" onAction="#processUpdateBTN" text="Update" />
                </children>
                <padding>
                   <Insets left="1.0" />

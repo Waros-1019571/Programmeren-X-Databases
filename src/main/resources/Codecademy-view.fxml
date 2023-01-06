@@ -18,7 +18,7 @@
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codecademy.controller.CodecademyController">
   <tabs>
-    <Tab text="View organisations">
+    <Tab text="Organisations">
       <content>
             <GridPane fx:id="organisationPane">
                <columnConstraints>
