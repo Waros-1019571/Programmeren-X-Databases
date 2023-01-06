@@ -1,60 +1,98 @@
 package com.codecademy.controller;
 
-import com.codecademy.CodecademyApplication;
 import com.codecademy.entity.Organisation;
 import com.codecademy.model.OrganisationDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public class OrganisationOverviewController {
     @FXML
-    TableView<Organisation> table;
+    TableView<Organisation> organisationTableView;
     @FXML
-    Button deleteBTN;
+    TextField organisationNameField;
     OrganisationDAO organisationDAO;
     Pane root;
-    FXMLLoader formLoader;
-    OrganisationFormController controller;
-
-    public OrganisationOverviewController() {
-        this.formLoader = new FXMLLoader(CodecademyApplication.class.getResource("Organisation-Form-view.fxml"));
-        this.controller = new OrganisationFormController();
-    }
 
     public void setOrganisationDAO(OrganisationDAO organisationDAO) {
         this.organisationDAO = organisationDAO;
-        this.controller.setOrganisationDAO(this.organisationDAO);
     }
 
     public void setRoot(Pane root) {
         this.root = root;
-        controller.setRoot(this.root);
     }
 
+    @FXML
     public void initialize() {
-        TableColumn<Organisation, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        table.getColumns().add(nameColumn);
-        List<Organisation> list = organisationDAO.getAll();
+        loadOrganisations();
 
+        organisationTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                organisationNameField.setText(organisationTableView.getSelectionModel().getSelectedItem().getName());
+//                organisationTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+    }
+
+    private void loadOrganisations() {
+        List<Organisation> list = organisationDAO.getAll();
         if (list == null || list.size() == 0) {
-            System.out.println("list is empty");
+            System.out.println("Organisation list is empty");
             return;
         }
 
+        organisationTableView.getItems().clear();
+        organisationTableView.getColumns().clear();
+
+        TableColumn<Organisation, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
+        organisationTableView.getColumns().add(idCol);
+
+        TableColumn<Organisation, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        organisationTableView.getColumns().add(nameCol);
+
         ObservableList<Organisation> data = FXCollections.observableArrayList(list);
-        table.setItems(data);
+        organisationTableView.setItems(data);
+    }
+    @FXML
+    private void processCreateBTN() {
+        Organisation organisation = new Organisation();
+        organisation.setName(organisationNameField.getText());
+        organisationDAO.create(organisation);
+        loadOrganisations();
     }
 
+    @FXML
+    private void processUpdateBTN() {
+        if (isOrganisationNotSelected()) {
+            return;
+        }
+
+        Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
+        organisation.setName(organisationNameField.getText());
+
+        if (!organisationDAO.update(organisation)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Update Error");
+            alert.setContentText("Organisation couldn't be Updated!");
+            alert.show();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Update succeeded");
+        alert.setContentText("Organisation has been Updated!");
+        alert.show();
+
+        loadOrganisations();
+    }
     @FXML
     private void processDeleteBTN() {
         if (isOrganisationNotSelected()) {
@@ -71,7 +109,7 @@ public class OrganisationOverviewController {
         }
 
         if (result.get() == ButtonType.OK){
-            if (!organisationDAO.delete(table.getSelectionModel().getSelectedItem())) {
+            if (!organisationDAO.delete(organisationTableView.getSelectionModel().getSelectedItem())) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Delete Error");
                 alert.setContentText("Organisation couldn't be deleted!");
@@ -83,46 +121,12 @@ public class OrganisationOverviewController {
             alert.setTitle("Deletion succeeded");
             alert.setContentText("Organisation has been deleted!");
             alert.show();
-            table.getItems().remove(table.getSelectionModel().getSelectedIndex());
+            organisationTableView.getItems().remove(organisationTableView.getSelectionModel().getSelectedIndex());
         }
-    }
-
-    private void goToOrganisationForm(FXMLLoader loader) {
-        try {
-            root.getChildren().clear();
-            root.getChildren().add(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void processCreateBTN() {
-        formLoader.setControllerFactory(newController -> {
-            controller.setCreating(true);
-            return controller;
-        });
-
-        goToOrganisationForm(formLoader);
-    }
-
-    @FXML
-    private void processUpdateBTN() {
-        if (isOrganisationNotSelected()) {
-            return;
-        }
-
-        formLoader.setControllerFactory(newController -> {
-            controller.setOrganisation(table.getSelectionModel().getSelectedItem());
-            return controller;
-        });
-
-        goToOrganisationForm(formLoader);
     }
 
     private boolean isOrganisationNotSelected() {
-        if (table.getSelectionModel().getSelectedItem() != null) {
-
+        if (organisationTableView.getSelectionModel().getSelectedItem() != null) {
             return false;
         }
 

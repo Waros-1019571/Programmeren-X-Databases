@@ -1,5 +1,6 @@
 package com.codecademy.controller;
 
+import com.codecademy.CodecademyApplication;
 import com.codecademy.entity.Course;
 import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
@@ -12,9 +13,12 @@ import com.codecademy.model.WebcastDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,15 +35,7 @@ public class CodecademyController {
     private WebcastDAO webcastDAO = new WebcastDAO(dbConnection);
 
     @FXML
-    private TableView<Organisation> organisationTableView;
-    @FXML
-    private Button organisationDeleteBTN;
-    @FXML
-    private Button createOrganisationBTN;
-    @FXML
-    private Button updateOrganisationBTN;
-    @FXML
-    private TextField organisationNameField;
+    private GridPane organisationPane;
     @FXML
     private TableView<VoiceActor> voiceActorTableView;
     @FXML
@@ -75,20 +71,6 @@ public class CodecademyController {
 
     @FXML
     public void initialize() throws SQLException {
-        organisationDeleteBTN.setOnAction(event -> {
-            try {
-                processDeleteOrganisationButton();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        createOrganisationBTN.setOnAction(event -> {
-            try {
-                processCreateOrganisationButton();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
         voiceActorDeleteBTN.setOnAction(event -> {
             try {
                 processDeleteVoiceActorButton();
@@ -99,13 +81,6 @@ public class CodecademyController {
         createVoiceActorBTN.setOnAction(event -> {
             try {
                 processCreateVoiceActorBtn();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        updateOrganisationBTN.setOnAction(event -> {
-            try {
-                processUpdateOrganisationBtn();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -124,18 +99,33 @@ public class CodecademyController {
                 e.printStackTrace();
             }
         });
-
-        loadOrganisations();
+        loadOrganisation();
+        loadActor();
         loadVoiceActors();
         loadWebcasts();
     }
 
-    private void loadOrganisations() throws SQLException {
-        loadOrganisationsForTableView(organisationTableView);
+    private void loadOrganisation() {
+        FXMLLoader loader = new FXMLLoader(CodecademyApplication.class.getResource("Organisation-Overview-view.fxml"));
+        loader.setControllerFactory(newController -> {
+            OrganisationOverviewController controller = new OrganisationOverviewController();
+            controller.setOrganisationDAO(organisationDAO);
+            controller.setRoot(organisationPane);
+            return controller;
+        });
+
+        try {
+            organisationPane.getChildren().add(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadActor() {
         loadOrganisationsForTableView(organisationVoiceActorTableView);
     }
 
-    private void loadOrganisationsForTableView(TableView<Organisation> tableView) throws SQLException {
+    private void loadOrganisationsForTableView(TableView<Organisation> tableView) {
         List<Organisation> list = organisationDAO.getAll();
         tableView.getItems().clear();
         tableView.getColumns().clear();
@@ -185,7 +175,7 @@ public class CodecademyController {
         loadVoiceActorsForWebcast();
     }
 
-    private void loadVoiceActorsForWebcast() throws SQLException {
+    private void loadVoiceActorsForWebcast() {
         List<VoiceActor> list = voiceActorDAO.getAll();
         webcastVoiceActorsView.getItems().clear();
         webcastVoiceActorsView.getColumns().clear();
@@ -207,7 +197,7 @@ public class CodecademyController {
         webcastVoiceActorsView.setItems(data);
     }
 
-    private void loadWebcasts() throws SQLException {
+    private void loadWebcasts() {
         List<Webcast> list = webcastDAO.getAll();
         webcastTableView.getItems().clear();
         webcastTableView.getColumns().clear();
@@ -245,20 +235,6 @@ public class CodecademyController {
         webcastTableView.setItems(data);
     }
 
-    private void processDeleteOrganisationButton() throws SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete organisation");
-        alert.setHeaderText("Delete organisation");
-        alert.setContentText("Are you sure you want to do this?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
-            organisationDAO.delete(organisation);
-            loadOrganisations();
-        }
-    }
-
     private void processDeleteVoiceActorButton() throws SQLException {
         if (voiceActorTableView.getSelectionModel().getSelectedItem() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -282,13 +258,6 @@ public class CodecademyController {
         }
     }
 
-    private void processCreateOrganisationButton() throws SQLException {
-        Organisation organisation = new Organisation();
-        organisation.setName(organisationNameField.getText());
-        organisationDAO.create(organisation);
-        loadOrganisations();
-    }
-
     private void processCreateVoiceActorBtn() throws SQLException {
         if (organisationVoiceActorTableView.getSelectionModel().getSelectedItem() != null) {
             VoiceActor voiceActor = new VoiceActor();
@@ -303,22 +272,6 @@ public class CodecademyController {
             alert.setContentText("Please select an organisation to attach to the voice actor");
             alert.showAndWait();
         }
-    }
-
-    private void processUpdateOrganisationBtn() throws SQLException {
-        if (organisationTableView.getSelectionModel().getSelectedItem() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Missing voice actor");
-            alert.setHeaderText("Missing voice actor");
-            alert.setContentText("Please select a voice actor to update");
-            alert.showAndWait();
-            return;
-        }
-
-        Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
-        organisation.setName(organisationNameField.getText());
-        organisationDAO.update(organisation);
-        loadOrganisations();
     }
 
     private Date getWebcastDate() throws ParseException {
