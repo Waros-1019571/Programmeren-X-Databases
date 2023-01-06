@@ -26,7 +26,7 @@ import java.util.Optional;
 public class CodecademyController {
     private DBConnection dbConnection = new DBConnection();
     private OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
-    private CourseDAO courseDAO = new CourseDAO();
+    private CourseDAO courseDAO = new CourseDAO(dbConnection);
     private VoiceActorDAO voiceActorDAO = new VoiceActorDAO(dbConnection);
     private WebcastDAO webcastDAO = new WebcastDAO(dbConnection);
 

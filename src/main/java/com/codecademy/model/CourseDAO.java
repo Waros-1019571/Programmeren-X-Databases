@@ -4,11 +4,9 @@ import com.codecademy.entity.Course;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class CourseDAO implements DAO<Course> {
@@ -30,9 +28,10 @@ public class CourseDAO implements DAO<Course> {
     }
 
     @Override
-    public void create(Course course) throws SQLException {
+    public boolean create(Course course) {
         PreparedStatement statement = null;
         ResultSet result = null;
+        boolean isCreated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
@@ -42,15 +41,19 @@ public class CourseDAO implements DAO<Course> {
 
             statement.setString(1, courseTitle);
             statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new NoSuchElementException("Update failed: no rows affected.");
+            }
+            isCreated = true;
 
         } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
-            if (statement != null) {
-                statement.close();
-            }
+            closeRequest(statement, result);
         }
+        return isCreated;
     }
 
     @Override
@@ -60,5 +63,22 @@ public class CourseDAO implements DAO<Course> {
     @Override
     public boolean delete(Course course) {
         return false;
+    }
+
+    private void closeRequest(Statement statement, ResultSet resultSet) {
+        closeRequest(statement);
+        try {
+            resultSet.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeRequest(Statement statement) {
+        try {
+            statement.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }
