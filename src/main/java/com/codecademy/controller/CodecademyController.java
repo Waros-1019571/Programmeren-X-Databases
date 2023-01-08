@@ -37,16 +37,13 @@ public class CodecademyController {
     @FXML
     private GridPane organisationPane;
     @FXML
-    private TableView<VoiceActor> voiceActorTableView;
+    private Tab organisationTab;
     @FXML
-    private Button voiceActorDeleteBTN;
+    private GridPane voiceActorPane;
     @FXML
-    private TableView<Organisation> organisationVoiceActorTableView;
+    private Tab voiceActorTab;
     @FXML
-    private Button createVoiceActorBTN;
-    @FXML
-    private TextField createVoiceActorNameField;
-
+    private TabPane tabPane;
     @FXML
     private TableView<Webcast> webcastTableView;
     @FXML
@@ -70,21 +67,8 @@ public class CodecademyController {
     private Button addWebcastBTN;
 
     @FXML
-    public void initialize() throws SQLException {
-        voiceActorDeleteBTN.setOnAction(event -> {
-            try {
-                processDeleteVoiceActorButton();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        createVoiceActorBTN.setOnAction(event -> {
-            try {
-                processCreateVoiceActorBtn();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+    public void initialize() {
+
         addWebcastBTN.setOnAction(event -> {
             try {
                 processAddWebcastBtn();
@@ -100,9 +84,16 @@ public class CodecademyController {
             }
         });
         loadOrganisation();
-        loadActor();
-        loadVoiceActors();
         loadWebcasts();
+        // reload panes when selected
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(organisationTab)) {
+                loadOrganisation();
+            }
+            if (newValue.equals(voiceActorTab)) {
+                loadVoiceActor();
+            }
+        });
     }
 
     private void loadOrganisation() {
@@ -121,59 +112,23 @@ public class CodecademyController {
         }
     }
 
-    private void loadActor() {
-        loadOrganisationsForTableView(organisationVoiceActorTableView);
-    }
+    private void loadVoiceActor() {
+        FXMLLoader loader = new FXMLLoader(CodecademyApplication.class.getResource("voiceActor-view.fxml"));
+        loader.setControllerFactory(newController -> {
+            VoiceActorController controller = new VoiceActorController();
+            controller.setVoiceActorDAO(voiceActorDAO);
+            controller.setOrganisationDAO(organisationDAO);
+            return controller;
+        });
 
-    private void loadOrganisationsForTableView(TableView<Organisation> tableView) {
-        List<Organisation> list = organisationDAO.getAll();
-        tableView.getItems().clear();
-        tableView.getColumns().clear();
-
-        TableColumn<Organisation, Integer> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
-        tableView.getColumns().add(idCol);
-
-        TableColumn<Organisation, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tableView.getColumns().add(nameCol);
-
-        if (list == null || list.size() == 0) {
-            System.out.println("Organisation list is empty");
-            return;
+        try {
+            voiceActorPane.getChildren().clear();
+            voiceActorPane.getChildren().add(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        ObservableList<Organisation> data = FXCollections.observableArrayList(list);
-        tableView.setItems(data);
     }
 
-    private void loadVoiceActors() throws SQLException {
-        List<VoiceActor> list = voiceActorDAO.getAll();
-        voiceActorTableView.getItems().clear();
-        voiceActorTableView.getColumns().clear();
-
-        TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        voiceActorTableView.getColumns().add(idCol);
-
-        TableColumn<VoiceActor, Object> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        voiceActorTableView.getColumns().add(nameCol);
-
-        TableColumn<VoiceActor, Integer> organisationIdCol = new TableColumn<>("Organisation ID");
-        organisationIdCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
-        voiceActorTableView.getColumns().add(organisationIdCol);
-
-        if (list == null || list.size() == 0) {
-            System.out.println("Voice actor list is empty");
-            return;
-        }
-
-        ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
-        voiceActorTableView.setItems(data);
-
-        loadVoiceActorsForWebcast();
-    }
 
     private void loadVoiceActorsForWebcast() {
         List<VoiceActor> list = voiceActorDAO.getAll();
@@ -234,46 +189,6 @@ public class CodecademyController {
         ObservableList<Webcast> data = FXCollections.observableArrayList(list);
         webcastTableView.setItems(data);
     }
-
-    private void processDeleteVoiceActorButton() throws SQLException {
-        if (voiceActorTableView.getSelectionModel().getSelectedItem() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Missing voice actor");
-            alert.setHeaderText("Missing voice actor");
-            alert.setContentText("Please select a voice actor to delete");
-            alert.showAndWait();
-            return;
-        }
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete voice actor");
-        alert.setHeaderText("Delete voice actor");
-        alert.setContentText("Are you sure you want to do this?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            VoiceActor voiceActor = voiceActorTableView.getSelectionModel().getSelectedItem();
-            voiceActorDAO.delete(voiceActor);
-            loadVoiceActors();
-        }
-    }
-
-    private void processCreateVoiceActorBtn() throws SQLException {
-        if (organisationVoiceActorTableView.getSelectionModel().getSelectedItem() != null) {
-            VoiceActor voiceActor = new VoiceActor();
-            voiceActor.setName(createVoiceActorNameField.getText());
-            voiceActor.setOrganisationId(organisationVoiceActorTableView.getSelectionModel().getSelectedItem().getOrganisationId());
-            voiceActorDAO.create(voiceActor);
-            loadVoiceActors();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Missing organisation");
-            alert.setHeaderText("Missing organisation");
-            alert.setContentText("Please select an organisation to attach to the voice actor");
-            alert.showAndWait();
-        }
-    }
-
     private Date getWebcastDate() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.parse(webcastPublicationDateField.getText());

@@ -1,14 +1,12 @@
 package com.codecademy.model;
 
+import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 public class VoiceActorDAO implements DAO<VoiceActor> {
     private DBConnection dbConnection;
@@ -26,13 +24,17 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT ID, Name, OrganisationID FROM VOICE_ACTOR");
-
+            result = statement.executeQuery("SELECT VOICE_ACTOR.Name, VOICE_ACTOR.ID, ORGANISATION.Name, ORGANISATION.ID FROM VOICE_ACTOR LEFT JOIN ORGANISATION ON VOICE_ACTOR.OrganisationID = ORGANISATION.ID");
             while (result.next()) {
+                Organisation organisation = new Organisation();
+                organisation.setOrganisationId(result.getInt(4));
+                organisation.setName(result.getString(3));
+
                 VoiceActor voiceActor = new VoiceActor();
-                voiceActor.setId(result.getInt(1));
-                voiceActor.setName(result.getString(2));
-                voiceActor.setOrganisationId(result.getInt(3));
+                voiceActor.setId(result.getInt(2));
+                voiceActor.setName(result.getString(1));
+                voiceActor.setOrganisation(organisation);
+
                 voiceActorList.add(voiceActor);
             }
 
@@ -60,14 +62,9 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             statement = connection.prepareStatement("INSERT INTO VOICE_ACTOR (Name, OrganisationID) VALUES(?,?)");
             String name = voiceActor.getName();
             statement.setString(1, name);
-            int organisationId = voiceActor.getOrganisationId();
+            int organisationId = voiceActor.getOrganisation().getOrganisationId();
             statement.setInt(2, organisationId);
-            statement.executeUpdate();
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("Update failed: no rows affected.");
-            }
-            result = true;
+            result = statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,7 +72,7 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
         } finally {
             closeRequest(statement);
         }
-        return false;
+        return result;
     }
 
     @Override
@@ -94,9 +91,10 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
             if (!result.next()){
                 throw new NoSuchElementException("No results found");
             } else {
-                statement = connection.prepareStatement("UPDATE VOICE_ACTOR SET Name = ? WHERE ID = ?");
+                statement = connection.prepareStatement("UPDATE VOICE_ACTOR SET Name = ?, OrganisationID = ? WHERE ID = ?");
                 statement.setString(1, voiceActor.getName());
-                statement.setInt(2, voiceActor.getId());
+                statement.setInt(2, voiceActor.getOrganisation().getOrganisationId());
+                statement.setInt(3, voiceActor.getId());
                 int rowsAffected = statement.executeUpdate();
                 if (rowsAffected == 0) {
                     throw new SQLException("Update failed: no rows affected.");
@@ -116,24 +114,19 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
     @Override
     public boolean delete(VoiceActor voiceActor) {
         PreparedStatement statement = null;
-        ResultSet result = null;
-        ArrayList<VoiceActor> voiceActorList = new ArrayList<>();
         boolean isDeleted = false;
 
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("DELETE FROM VOICE_ACTOR WHERE ID = ?");
             statement.setInt(1, voiceActor.getId());
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0) {
-                isDeleted = true;
-            }
+            isDeleted = statement.executeUpdate() > 0;
 
         } catch(SQLException e) {
             e.printStackTrace();
 
         } finally {
-           closeRequest(statement, result);
+           closeRequest(statement);
         }
         return isDeleted;
     }

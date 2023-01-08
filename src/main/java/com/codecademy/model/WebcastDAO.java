@@ -1,5 +1,6 @@
 package com.codecademy.model;
 
+import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.entity.Webcast;
 import com.codecademy.logic.DAO;
@@ -32,7 +33,12 @@ public class WebcastDAO implements DAO<Webcast> {
                 VoiceActor voiceActor = new VoiceActor();
                 voiceActor.setId(result.getInt(1));
                 voiceActor.setName(result.getString(2));
-                voiceActor.setOrganisationId(result.getInt(3));
+
+                Organisation organisation = new Organisation();
+                organisation.setOrganisationId(result.getInt(3));
+                organisation.setName(result.getString(4));
+
+                voiceActor.setOrganisation(organisation);
                 webcast.setVoiceActor(voiceActor);
             }
         } catch (SQLException e) {

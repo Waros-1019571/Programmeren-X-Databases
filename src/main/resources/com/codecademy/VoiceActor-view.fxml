@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codecademy.controller.VoiceActorController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints vgrow="ALWAYS" />
+      <RowConstraints vgrow="NEVER" />
+   </rowConstraints>
+   <children>
+      <TableView fx:id="voiceActorTableView" prefHeight="200.0" prefWidth="200.0" />
+      <GridPane hgap="10.0" vgap="10.0" GridPane.rowIndex="1">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="51.0" />
+            <ColumnConstraints minWidth="74.0" />
+            <ColumnConstraints minWidth="-Infinity" prefWidth="200.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="51.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Name:" GridPane.columnIndex="1" />
+            <HBox GridPane.columnIndex="2" GridPane.hgrow="SOMETIMES">
+               <children>
+                  <TextField fx:id="voiceActorNameField" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <Label text="Organisation: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="organisationComboBox" minWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#processDeleteBTN" text="Delete" GridPane.rowIndex="2" />
+            <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#processCreateBTN" text="Create" />
+                  <Button mnemonicParsing="false" onAction="#processUpdateBTN" text="Update" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets top="10.0" />
+   </padding>
+</GridPane>
