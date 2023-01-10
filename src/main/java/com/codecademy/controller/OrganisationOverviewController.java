@@ -34,7 +34,6 @@ public class OrganisationOverviewController {
         organisationTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 organisationNameField.setText(organisationTableView.getSelectionModel().getSelectedItem().getName());
-//                organisationTableView.getSelectionModel().clearSelection();
             }
         });
 
@@ -49,6 +48,8 @@ public class OrganisationOverviewController {
 
         organisationTableView.getItems().clear();
         organisationTableView.getColumns().clear();
+        organisationTableView.getSelectionModel().clearSelection();
+        organisationNameField.setText("");
 
         TableColumn<Organisation, Integer> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(new PropertyValueFactory<>("organisationId"));
@@ -65,7 +66,19 @@ public class OrganisationOverviewController {
     private void processCreateBTN() {
         Organisation organisation = new Organisation();
         organisation.setName(organisationNameField.getText());
-        organisationDAO.create(organisation);
+        if (!organisationDAO.create(organisation)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Creation Error");
+            alert.setContentText("Organisation couldn't be created!");
+            alert.show();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Creation succeeded");
+        alert.setContentText("Organisation has been created!");
+        alert.show();
+
         loadOrganisations();
     }
 
