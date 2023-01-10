@@ -169,17 +169,6 @@ public class VoiceActorController {
         }
 
         ObservableList<Organisation> data = FXCollections.observableArrayList(list);
-        organisationComboBox.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Organisation organisation, boolean empty) {
-                super.updateItem(organisation, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(organisation.getName());
-                }
-            }
-        });
         organisationComboBox.setItems(data);
     }
 
@@ -193,11 +182,8 @@ public class VoiceActorController {
         voiceActorTableView.getItems().clear();
         voiceActorTableView.getColumns().clear();
 
-        TableColumn<VoiceActor, String> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(cellData -> {
-            VoiceActor voiceActor = cellData.getValue();
-            return new ReadOnlyStringWrapper(String.valueOf(voiceActor.getId()));
-        });
+        TableColumn<VoiceActor, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         voiceActorTableView.getColumns().add(idCol);
 
         TableColumn<VoiceActor, Object> nameCol = new TableColumn<>("Name");
@@ -205,11 +191,7 @@ public class VoiceActorController {
         voiceActorTableView.getColumns().add(nameCol);
 
         TableColumn<VoiceActor, String> organisationCol = new TableColumn<>("Organisation");
-        organisationCol.setCellValueFactory(cellData -> {
-            VoiceActor voiceActor = cellData.getValue();
-            Organisation organisation = voiceActor.getOrganisation();
-            return new ReadOnlyStringWrapper(organisation.getName());
-        });
+        organisationCol.setCellValueFactory(new PropertyValueFactory<>("organisation"));
         voiceActorTableView.getColumns().add(organisationCol);
 
         ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);

@@ -36,4 +36,9 @@ public class VoiceActor {
     public void setOrganisation(Organisation organisation) {
         this.organisation = organisation;
     }
+
+    @Override
+    public String toString() {
+        return getName() ;
+    }
 }
