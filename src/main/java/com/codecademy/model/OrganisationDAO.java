@@ -45,32 +45,6 @@ public class OrganisationDAO implements DAO<Organisation> {
     }
 
     @Override
-    public Organisation get(long id) {
-        Statement statement = null;
-        ResultSet result = null;
-        Organisation organisation = null;
-
-        try {
-            Connection connection = dbConnection.getConnection();
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM ORGANISATION WHERE id = ?");
-
-            if (result.next()) {
-                organisation = new Organisation();
-                organisation.setOrganisationId(result.getInt(1));
-                organisation.setName(result.getString(2));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            closeRequest(statement, result);
-        }
-        return organisation;
-    }
-
-    @Override
     public boolean create(Organisation organisation) {
         PreparedStatement statement = null;
         boolean isCreated = false;

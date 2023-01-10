@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface DAO<T> {
 
-        Object get(long id);
-
         List<T> getAll();
 
         boolean create(T t);

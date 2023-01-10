@@ -48,11 +48,6 @@ public class VoiceActorDAO implements DAO<VoiceActor> {
     }
 
     @Override
-    public Optional<VoiceActor> get(long id) {
-        return Optional.empty();
-    }
-
-    @Override
     public boolean create(VoiceActor voiceActor) {
         PreparedStatement statement = null;
         boolean result = false;

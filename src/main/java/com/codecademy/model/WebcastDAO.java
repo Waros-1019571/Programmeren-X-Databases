@@ -59,12 +59,6 @@ public class WebcastDAO implements DAO<Webcast> {
     }
 
     @Override
-    public Optional get(long id) {
-        // TODO
-        return Optional.empty();
-    }
-
-    @Override
     public List<Webcast> getAll() {
         Statement statement = null;
         ResultSet result = null;

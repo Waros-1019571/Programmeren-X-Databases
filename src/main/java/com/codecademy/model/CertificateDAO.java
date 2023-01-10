@@ -46,32 +46,6 @@ public class CertificateDAO implements DAO<Certificate> {
     }
 
     @Override
-    public Certificate get(long id) {
-        Statement statement = null;
-        ResultSet result = null;
-        Certificate certificate = null;
-
-        try {
-            Connection connection = dbConnection.getConnection();
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM CERTIFICATE WHERE id = ?");
-
-            if (result.next()) {
-                certificate = new Certificate();
-                certificate.setCertificateId(result.getInt(1));
-                certificate.setGrade(result.getDouble(2));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            closeRequest(statement, result);
-        }
-        return certificate;
-    }
-
-    @Override
     public boolean create(Certificate certificate) {
         PreparedStatement statement = null;
         boolean isCreated = false;

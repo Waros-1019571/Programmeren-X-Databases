@@ -53,39 +53,6 @@ public class StudentDAO implements DAO<Student> {
     }
 
     @Override
-    public Student get(long id) {
-        Statement statement = null;
-        ResultSet result = null;
-        Student student = null;
-
-        try {
-            Connection connection = dbConnection.getConnection();
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM STUDENT WHERE email = ?");
-
-            if (result.next()) {
-                student = new Student();
-                student.setEmail(result.getString(1));
-                student.setName(result.getString(2));
-                student.setBirthDate(result.getDate(3));
-                student.setGender(result.getString(4));
-                student.setStreet(result.getString(5));
-                student.setPostalCode(result.getString(6));
-                student.setHouseNumber(result.getString(7));
-                student.setCity(result.getString(8));
-                student.setCountry(result.getString(9));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            closeRequest(statement, result);
-        }
-        return student;
-    }
-
-    @Override
     public boolean create(Student student) {
         PreparedStatement statement = null;
         boolean isCreated = false;
