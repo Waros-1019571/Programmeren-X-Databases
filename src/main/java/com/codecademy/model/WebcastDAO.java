@@ -1,5 +1,6 @@
 package com.codecademy.model;
 
+import com.codecademy.entity.Course;
 import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.entity.Webcast;
@@ -10,13 +11,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class WebcastDAO implements DAO<Webcast> {
     private final DBConnection dbConnection;
+    private final VoiceActorDAO voiceActorDAO;
 
-    public WebcastDAO(DBConnection dbConnection) {
+    public WebcastDAO(DBConnection dbConnection, VoiceActorDAO voiceActorDAO) {
         this.dbConnection = dbConnection;
+        this.voiceActorDAO = voiceActorDAO;
     }
 
     private void addVoiceActor(Webcast webcast, int voiceActorID) throws SQLException {
@@ -67,18 +69,23 @@ public class WebcastDAO implements DAO<Webcast> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT ID, CourseID, VoiceActorID, Title, Description, URL, PublicationDate, Duration FROM WEBCAST");
+            result = statement.executeQuery("SELECT w.ID, w.CourseID, w.VoiceActorID, w.Title, w.Description, w.URL, w.PublicationDate, w.Duration, va.Name FROM WEBCAST as w LEFT JOIN VOICE_ACTOR AS va on w.VoiceActorID = va.ID");
 
             while (result.next()) {
                 Webcast webcast = new Webcast();
+                VoiceActor voiceActor = new VoiceActor();
                 webcast.setId(result.getInt(1));
                 addCourse(webcast, result.getInt(2));
-                addVoiceActor(webcast, result.getInt(3));
+                webcast.setCourse(new Course(1, "", "" , "", ""));
                 webcast.setTitle(result.getString(4));
                 webcast.setDescription(result.getString(5));
                 webcast.setUrl(result.getString(6));
                 webcast.setPublicationDate(result.getDate(7));
                 webcast.setDuration(result.getInt(8));
+
+                voiceActor.setId(result.getInt(3));
+                voiceActor.setName(result.getString(9));
+                webcast.setVoiceActor(voiceActor);
                 webcastList.add(webcast);
             }
 
@@ -104,15 +111,15 @@ public class WebcastDAO implements DAO<Webcast> {
             statement.setString(3, webcast.getTitle());
             statement.setString(4, webcast.getDescription());
             statement.setString(5, webcast.getUrl());
-            statement.setDate(6, new Date(webcast.getPublicationDate().getTime())); // util date to sql date
+            statement.setDate(6, Date.valueOf(webcast.getPublicationDate())); // util date to sql date
             statement.setInt(7, webcast.getDuration());
-            statement.execute();
+
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
             }
-            result = true;
 
+            result = true;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,6 +135,7 @@ public class WebcastDAO implements DAO<Webcast> {
         boolean result = false;
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
+
         try {
             statement = connection.prepareStatement("UPDATE WEBCAST SET CourseID = ?, VoiceActorID = ?, Title = ?, Description = ?, URL = ?, PublicationDate = ?, Duration = ? WHERE ID = ?");
             statement.setInt(1, webcast.getCourse().getCourseId());
@@ -135,11 +143,11 @@ public class WebcastDAO implements DAO<Webcast> {
             statement.setString(3, webcast.getTitle());
             statement.setString(4, webcast.getDescription());
             statement.setString(5, webcast.getUrl());
-            statement.setDate(6, new Date(webcast.getPublicationDate().getTime())); // util date to sql date
+            statement.setDate(6, Date.valueOf(webcast.getPublicationDate())); // util date to sql date
             statement.setInt(7, webcast.getDuration());
             statement.setInt(8, webcast.getId());
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected == 0) {
+
+            if (statement.executeUpdate() == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
             }
             result = true;

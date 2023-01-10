@@ -1,6 +1,7 @@
 package com.codecademy.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.sql.Date;
 import java.util.HashMap;
 
 public class Webcast {
@@ -29,12 +30,17 @@ public class Webcast {
         this.duration = duration;
     }
 
-    public Date getPublicationDate() {
-        return publicationDate;
+
+    public LocalDate getPublicationDate() {
+        return publicationDate.toLocalDate();
     }
 
     public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
+    }
+
+    public void setPublicationDate(LocalDate publicationDate) {
+        this.publicationDate = Date.valueOf(publicationDate);
     }
 
     public String getUrl() {
