@@ -59,11 +59,24 @@ public class CourseDAO implements DAO<Course> {
         try {
             Connection connection = dbConnection.getConnection();
 
-            statement = connection.prepareStatement("INSERT INTO COURSE (Name) VALUES(?)");
+            statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Name, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
             String courseTitle = course.getTitle();
+            String courseTopic = course.getTopic();
+            String courseOwner = course.getCourseOwnerName();
+            String courseName = course.getName();
+            String description = course.getDescription();
+            int courseLevel = course.getCourseLevel();
+            int courseStatus = course.getCourseStatus();
 
             statement.setString(1, courseTitle);
+            statement.setString(2, courseTopic);
+            statement.setString(3, courseOwner);
+            statement.setString(4, courseName);
+            statement.setString(5, description);
+            statement.setInt(6, courseLevel);
+            statement.setInt(7, courseStatus);
             statement.executeUpdate();
+
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
@@ -81,8 +94,33 @@ public class CourseDAO implements DAO<Course> {
 
     @Override
     public boolean update(Course course) {
-        return false;
+
+        PreparedStatement statement = null;
+        boolean isUpdated = false;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("UPDATE COURSE SET Title = ?,Topic = ?,CourseOwner = ?, Name = ?, Description = ?,CourseLevel = ? ,CourseStatus = ? WHERE Title = ?");
+            statement.setString(1, course.getTitle());
+            statement.setString(2, course.getTopic());
+            statement.setString(3, course.getCourseOwnerName());
+            statement.setString(4, course.getName());
+            statement.setString(5, course.getDescription());
+            statement.setInt(6, course.getCourseLevel());
+            statement.setInt(7, course.getCourseStatus());
+            statement.setString(8, course.getTitle());
+
+            isUpdated = statement.executeUpdate() > 0;
+
+        } catch (SQLException | NoSuchElementException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+
+        return isUpdated;
     }
+
     @Override
     public boolean delete(Course course) {
         return false;

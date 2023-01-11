@@ -9,6 +9,35 @@ public class Course {
     private SimpleStringProperty topic;
     private SimpleStringProperty courseOwnerName;
     private SimpleStringProperty description;
+    private SimpleStringProperty name;
+    private SimpleIntegerProperty courseLevel;
+    private SimpleIntegerProperty courseStatus;
+    public String getName() {
+        return name.get();
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public int getCourseLevel() {
+        return courseLevel.get();
+    }
+
+    public void setCourseLevel(int courseLevel) {
+        this.courseLevel.set(courseLevel);
+    }
+
+    public int getCourseStatus() {
+        return courseStatus.get();
+    }
+
+
+    public void setCourseStatus(int courseStatus) {
+        this.courseStatus.set(courseStatus);
+    }
+
+
 
     public Course() {
         this.courseId = new SimpleIntegerProperty();
