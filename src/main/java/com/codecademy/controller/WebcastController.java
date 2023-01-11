@@ -67,7 +67,7 @@ public class WebcastController {
         }
 
         Webcast webcast = new Webcast();
-        webcast.setCourse(new Course(1, null, null, null, null));
+        webcast.setCourse(new Course());
         webcast.setVoiceActor(voiceActorComboBox.getValue());
         webcast.setTitle(webcastTitleField.getText());
         webcast.setDescription(webcastDescriptionField.getText());

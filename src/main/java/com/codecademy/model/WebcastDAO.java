@@ -76,7 +76,7 @@ public class WebcastDAO implements DAO<Webcast> {
                 VoiceActor voiceActor = new VoiceActor();
                 webcast.setId(result.getInt(1));
                 addCourse(webcast, result.getInt(2));
-                webcast.setCourse(new Course(1, "", "" , "", ""));
+                webcast.setCourse(new Course());
                 webcast.setTitle(result.getString(4));
                 webcast.setDescription(result.getString(5));
                 webcast.setUrl(result.getString(6));

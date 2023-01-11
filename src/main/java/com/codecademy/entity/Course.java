@@ -1,18 +1,21 @@
 package com.codecademy.entity;
 
-public class Course {
-    private int courseId;
-    private String title;
-    private String topic;
-    private String courseOwnerName;
-    private String description;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-    public Course(int courseId, String title, String topic, String courseOwnerName, String description) {
-        this.courseId = courseId;
-        this.title = title;
-        this.topic = topic;
-        this.courseOwnerName = courseOwnerName;
-        this.description = description;
+public class Course {
+    private SimpleIntegerProperty courseId;
+    private SimpleStringProperty title;
+    private SimpleStringProperty topic;
+    private SimpleStringProperty courseOwnerName;
+    private SimpleStringProperty description;
+
+    public Course() {
+        this.courseId = new SimpleIntegerProperty();
+        this.title = new SimpleStringProperty();
+        this.topic = new SimpleStringProperty();
+        this.courseOwnerName = new SimpleStringProperty();
+        this.description = new SimpleStringProperty();
     }
 
     //    public int getStatisticOfPerson(Person student){
@@ -38,38 +41,38 @@ public class Course {
     //------------------ Default getters and setters
 
     public int getCourseId() {
-        return courseId;
+        return courseId.get();
     }
 
     public String getTitle() {
-        return title;
+        return title.get();
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title.set(title);
     }
 
     public String getTopic() {
-        return topic;
+        return topic.get();
     }
 
     public void setTopic(String topic) {
-        this.topic = topic;
+        this.topic.set(topic);
     }
 
     public String getCourseOwnerName() {
-        return courseOwnerName;
+        return courseOwnerName.get();
     }
 
     public void setCourseOwnerName(String courseOwnerName) {
-        this.courseOwnerName = courseOwnerName;
+        this.courseOwnerName.set(courseOwnerName);
     }
 
     public String getDescription() {
-        return description;
+        return description.get();
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description.set(description);
     }
 }

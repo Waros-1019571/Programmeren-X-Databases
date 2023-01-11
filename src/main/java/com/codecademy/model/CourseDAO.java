@@ -35,7 +35,7 @@ public class CourseDAO implements DAO<Course> {
         try {
             Connection connection = dbConnection.getConnection();
 
-            statement = connection.prepareStatement("INSERT INTO ORGANISATION (Name) VALUES(?)");
+            statement = connection.prepareStatement("INSERT INTO COURSE (Name) VALUES(?)");
             String courseTitle = course.getTitle();
 
             statement.setString(1, courseTitle);
