@@ -12,7 +12,7 @@ public class Module {
     private SimpleStringProperty title;
     private SimpleStringProperty description;
     private SimpleIntegerProperty serialNumber;
-    private Date publicationDate;
+    private SimpleObjectProperty publicationDate;
     private SimpleStringProperty version;
     private final HashMap<Student, Double> progressOfStudents;
     private final Module module;
@@ -24,7 +24,7 @@ public class Module {
         this.title = new SimpleStringProperty();
         this.description = new SimpleStringProperty();
         this.serialNumber = new SimpleIntegerProperty();
-        this.publicationDate = publicationDate;
+        this.publicationDate = new SimpleObjectProperty();
         this.version = new SimpleStringProperty();
         this.module = module;
         this.progressOfStudents = new HashMap<>();
@@ -63,11 +63,11 @@ public class Module {
     }
 
     public Date getPublicationDate() {
-        return publicationDate;
+        return (Date) publicationDate.get();
     }
 
     public void setPublicationDate(Date publicationDate) {
-        this.publicationDate = publicationDate;
+        this.publicationDate.set(publicationDate);
     }
 
     public String getVersion() {
