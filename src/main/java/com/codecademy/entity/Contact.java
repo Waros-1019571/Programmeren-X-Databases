@@ -1,27 +1,29 @@
 package com.codecademy.entity;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Contact {
-    private String name;
-    private String email;
+    private SimpleStringProperty name;
+    private SimpleStringProperty email;
 
     public Contact(String name, String email) {
-        this.name = name;
-        this.email = email;
+        this.name = new SimpleStringProperty();
+        this.email = new SimpleStringProperty();
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public String getEmail() {
-        return email;
+        return email.get();
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email.set(email);
     }
 }

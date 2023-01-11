@@ -16,6 +16,7 @@ public class Webcast {
     private HashMap<Student, Double> progressOfStudent = new HashMap<Student, Double>();
 
     public Webcast() {
+
     }
 
     public void addStudentProgress (Student student, Double progress) {

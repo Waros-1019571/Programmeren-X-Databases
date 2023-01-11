@@ -1,10 +1,12 @@
 package com.codecademy.model;
 
+import com.codecademy.entity.Certificate;
 import com.codecademy.entity.Course;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -17,13 +19,35 @@ public class CourseDAO implements DAO<Course> {
         this.dbConnection = dbConnection;
     }
 
-    public Course get(long id) {
-        return null;
-    }
-
     @Override
     public List<Course> getAll() {
-        return null;
+        Statement statement = null;
+        ResultSet result = null;
+        ArrayList<Course> courseList = null;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM COURSE");
+            courseList = new ArrayList<>();
+
+            while (result.next()) {
+                Course course = new Course();
+                course.setCourseOwnerName(result.getString(1));
+                course.setTitle(result.getString(2));
+                course.setTopic(result.getString(3));
+                course.setDescription(result.getString(4));
+
+                courseList.add(course);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            closeRequest(statement, result);
+        }
+        return courseList;
     }
 
     @Override

@@ -1,60 +1,65 @@
 package com.codecademy.entity;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.util.Date;
 import java.util.HashMap;
 
 public class Module {
-    private int courseID;
-    private String title;
-    private String description;
-    private int serialNumber;
+    private SimpleIntegerProperty courseID;
+    private SimpleStringProperty title;
+    private SimpleStringProperty description;
+    private SimpleIntegerProperty serialNumber;
     private Date publicationDate;
-    private String version;
+    private SimpleStringProperty version;
     private final HashMap<Student, Double> progressOfStudents;
     private final Module module;
 
     public Module(int courseID, String title, String description, int serialNumber, Date publicationDate,
                   String version, Module module) {
-        this.courseID = courseID;
-        this.title = title;
-        this.description = description;
-        this.serialNumber = serialNumber;
+        this.courseID = new SimpleIntegerProperty();
+
+        this.title = new SimpleStringProperty();
+        this.description = new SimpleStringProperty();
+        this.serialNumber = new SimpleIntegerProperty();
         this.publicationDate = publicationDate;
-        this.version = version;
+        this.version = new SimpleStringProperty();
         this.module = module;
         this.progressOfStudents = new HashMap<>();
     }
 
     public int getCourseID() {
-        return courseID;
+        return courseID.get();
     }
 
     public void setCourseID(int courseID) {
-        this.courseID = courseID;
+        this.courseID.set(courseID);
     }
 
     public String getTitle() {
-        return title;
+        return title.get();
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title.set(title);
     }
 
     public String getDescription() {
-        return description;
+        return description.get();
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description.set(description);
     }
 
     public int getSerialNumber() {
-        return serialNumber;
+        return serialNumber.get();
     }
 
     public void setSerialNumber(int serialNumber) {
-        this.serialNumber = serialNumber;
+        this.serialNumber.set(serialNumber);
     }
 
     public Date getPublicationDate() {
@@ -66,11 +71,11 @@ public class Module {
     }
 
     public String getVersion() {
-        return version;
+        return version.get();
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.version.set(version);
     }
 
     public HashMap<Student, Double> getProgressOfStudents() {
