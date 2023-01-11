@@ -26,18 +26,18 @@ public class StudentDAO implements DAO<Student> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM STUDENT");
+            result = statement.executeQuery("SELECT ID , Email, Name, Birthdate, Gender, Address, PostalCode, City, Country FROM STUDENT");
             studentList = new ArrayList<>();
 
             while (result.next()) {
                 Student student = new Student();
-                student.setEmail(result.getString(1));
-                student.setName(result.getString(2));
-                student.setBirthDate(result.getDate(3));
-                student.setGender(result.getString(4));
-                student.setStreet(result.getString(5));
-                student.setPostalCode(result.getString(6));
-                student.setHouseNumber(result.getString(7));
+                student.setId(result.getInt(1));
+                student.setEmail(result.getString(2));
+                student.setName(result.getString(3));
+                student.setBirthDate(result.getDate(4));
+                student.setGender(result.getInt(5));
+                student.setAddress(result.getString(6));
+                student.setPostalCode(result.getString(7));
                 student.setCity(result.getString(8));
                 student.setCountry(result.getString(9));
                 studentList.add(student);
@@ -59,16 +59,15 @@ public class StudentDAO implements DAO<Student> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO STUDENT (email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO STUDENT (email, name, birthdate, gender, address, postalCode, city, country) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, student.getEmail());
             statement.setString(2, student.getName());
-            statement.setDate(3, (Date) student.getBirthDate());
-            statement.setString(4, student.getGender());
-            statement.setString(5, student.getStreet());
+            statement.setDate(3, Date.valueOf(student.getBirthDate()));
+            statement.setInt(4, student.getGender());
+            statement.setString(5, student.getAddress());
             statement.setString(6, student.getPostalCode());
-            statement.setString(7, student.getHouseNumber());
-            statement.setString(8, student.getCity());
-            statement.setString(9, student.getCountry());
+            statement.setString(7, student.getCity());
+            statement.setString(8, student.getCountry());
             isCreated = (statement.executeUpdate() > 0);
 
         } catch (SQLException e) {
@@ -86,16 +85,16 @@ public class StudentDAO implements DAO<Student> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE STUDENT SET name = ?, birthDate = ?, gender = ?, street = ?, postalCode = ?, houseNumber = ?, city = ?, country = ?  WHERE email = ?");
+            statement = connection.prepareStatement("UPDATE STUDENT SET email = ?, name = ?, birthDate = ?, gender = ?, address = ?, postalCode = ?, city = ?, country = ?  WHERE ID = ?");
             statement.setString(1, student.getEmail());
             statement.setString(2, student.getName());
-            statement.setDate(3, (Date) student.getBirthDate());
-            statement.setString(4, student.getGender());
-            statement.setString(5, student.getStreet());
+            statement.setDate(3, Date.valueOf(student.getBirthDate()));
+            statement.setInt(4, student.getGender());
+            statement.setString(5, student.getAddress());
             statement.setString(6, student.getPostalCode());
-            statement.setString(7, student.getHouseNumber());
-            statement.setString(8, student.getCity());
-            statement.setString(9, student.getCountry());
+            statement.setString(7, student.getCity());
+            statement.setString(8, student.getCountry());
+            statement.setInt(9,student.getId());
 
             isUpdated = statement.executeUpdate() > 0;
 
@@ -115,8 +114,8 @@ public class StudentDAO implements DAO<Student> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("DELETE FROM STUDENT WHERE email = ?");
-            statement.setString(1, student.getEmail());
+            statement = connection.prepareStatement("DELETE FROM STUDENT WHERE ID = ?");
+            statement.setInt(1, student.getId());
             isDeleted = statement.executeUpdate() > 0;
 
         } catch (SQLException e) {

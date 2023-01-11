@@ -5,121 +5,109 @@
  */
 package com.codecademy.entity;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleObjectProperty;
 /**
  *
  * @author Daan
  */
 public class Student {
+    private int id;
+    private String email;
+    private String name;
+    private LocalDate birthDate;
+    private int gender;
+    private String address;
+    private String postalCode;
+    private String city;
+    private String country;
 
-    private SimpleStringProperty email;
-    private SimpleStringProperty name;
-    private SimpleObjectProperty birthDate;
-    private SimpleStringProperty gender;
-    private SimpleStringProperty street;
-    private SimpleStringProperty postalCode;
-    private SimpleStringProperty houseNumber;
-    private SimpleStringProperty city;
-    private SimpleStringProperty country;
+    public int getId() {
+        return id;
+    }
 
-    public Student() {
-        this.email = new SimpleStringProperty();
-        this.name = new SimpleStringProperty();
-        this.birthDate = new SimpleObjectProperty();
-        this.gender = new SimpleStringProperty();
-        this.street = new SimpleStringProperty();
-        this.postalCode = new SimpleStringProperty();
-        this.houseNumber = new SimpleStringProperty();
-        this.city = new SimpleStringProperty();
-        this.country = new SimpleStringProperty();
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
-        return email.get();
+        return email;
     }
 
     public void setEmail(String email) {
-        this.email.set(email);
+        this.email = email;
     }
-//
 
     public String getName() {
-        return name.get();
+        return name;
     }
 
     public void setName(String name) {
-        this.name.set(name);
-    }
-//
-
-    public Date getBirthDate() {
-        return (Date) birthDate.get();
+        this.name = name;
     }
 
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
     public void setBirthDate(Date birthDate) {
-        this.birthDate.set(birthDate);
-    }
-//
-
-    public String getGender() {
-        return gender.get();
+        this.birthDate = birthDate.toLocalDate();
     }
 
-    public void setGender(String gender) {
-        this.gender.set(gender);
+    public int getGender() {
+        return gender;
     }
 
-//
-    public String getStreet() {
-        return street.get();
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
-    public void setStreet(String street) {
-        this.street.set(street);
+    public String getAddress() {
+        return address;
     }
 
-//
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getPostalCode() {
-        return postalCode.get();
+        return postalCode;
     }
 
     public void setPostalCode(String postalCode) {
-        this.postalCode.set(postalCode);
+        this.postalCode = postalCode;
     }
 
-//
-    public String getHouseNumber() {
-        return houseNumber.get();
-    }
-
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber.set(houseNumber);
-    }
-
-//
     public String getCity() {
-        return city.get();
+        return city;
     }
 
     public void setCity(String city) {
-        this.city.set(city);
+        this.city = city;
     }
 
-//
     public String getCountry() {
-        return country.get();
+        return country;
     }
 
     public void setCountry(String country) {
-        this.country.set(country);
+        this.country = country;
     }
 
-    private static class birthDate {
-
-        public birthDate() {
+    public String genderToString() {
+        if (gender == 0) {
+            return "Other";
         }
+        if (gender == 1) {
+            return "Female";
+        }
+        if (gender == 2) {
+            return "male";
+        }
+        return "unknown";
     }
 }

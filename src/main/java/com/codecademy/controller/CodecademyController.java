@@ -17,6 +17,7 @@ import java.io.IOException;
 public class CodecademyController {
     private DBConnection dbConnection = new DBConnection();
     private OrganisationDAO organisationDAO = new OrganisationDAO(dbConnection);
+
     private CourseDAO courseDAO = new CourseDAO(dbConnection);
     private VoiceActorDAO voiceActorDAO = new VoiceActorDAO(dbConnection);
     private WebcastDAO webcastDAO = new WebcastDAO(dbConnection, voiceActorDAO);
@@ -34,6 +35,10 @@ public class CodecademyController {
     @FXML
     private Tab webcastTab;
     @FXML
+    private Tab studentTab;
+    @FXML
+    private Pane studentPane;
+    @FXML
     private TabPane tabPane;
 
     @FXML
@@ -50,6 +55,9 @@ public class CodecademyController {
             }
             if (newValue.equals(webcastTab)) {
                 loadVoiceActor();
+            }
+            if (newValue.equals(studentTab)) {
+                loadStudent();
             }
         });
     }
@@ -99,6 +107,21 @@ public class CodecademyController {
         try {
             webcastPane.getChildren().clear();
             webcastPane.getChildren().add(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadStudent() {
+        FXMLLoader loader = new FXMLLoader(CodecademyApplication.class.getResource("Student-view.fxml"));
+        loader.setControllerFactory(newController -> {
+            StudentController controller = new StudentController();
+            controller.setDbConnection(dbConnection);
+            return controller;
+        });
+
+        try {
+            studentPane.getChildren().clear();
+            studentPane.getChildren().add(loader.load());
         } catch (IOException e) {
             e.printStackTrace();
         }
