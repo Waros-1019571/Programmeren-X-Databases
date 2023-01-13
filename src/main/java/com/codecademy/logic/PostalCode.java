@@ -28,32 +28,32 @@ public class PostalCode {
      * }
      *
      */
-    public static String formatPostalCode(/* non_null */ String postalCode) {
+    public static String formatPostalCode(/* non_null */ String postalCode) throws IllegalArgumentException, NullPointerException {
         // Null check
         if (postalCode == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Email address is missing");
         }
         // Remove spaces
         postalCode = postalCode.replaceAll(" ", "");
         // No space postal code must be six long
         if (postalCode.length() != 6) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Postal code must be six characters, spaces excluded");
         }
         // First four characters must be numbers
         int numbers;
         try {
             numbers = Integer.parseInt(postalCode.substring(0,4));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("First four symbols of a postal code must be numbers");
         }
         boolean fourNumbers = numbers >= 1000 && numbers <= 9999;
         if (!fourNumbers) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Postal code numbers must be between 1000 and 9999");
         }
         // Last two characters must be letters
         String letters = postalCode.substring(4).toUpperCase();
         if (letters.charAt(0) < 'A' || letters.charAt(0) > 'Z' || letters.charAt(1) < 'A' || letters.charAt(1) > 'Z') {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Last two symbols of a postal code must be letters");
         }
         // Valid postal code, format it
         return Integer.toString(numbers) + ' ' + letters;

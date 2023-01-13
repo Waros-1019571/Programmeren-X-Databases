@@ -31,18 +31,6 @@ public class MailToolsTest {
     }
 
     @Test
-    public void validateMailAddressSubdomainTldReturnsFalse() {
-        // Arrange
-        String input = "example@example.org.org.org";
-
-        // Act
-        boolean result = MailTools.validateMailAddress(input);
-
-        // Assert
-        assertFalse(result);
-    }
-
-    @Test
     public void validateMailAddressSubdomainTldNoAtSignReturnsFalse() {
         // Arrange
         String input = "exampleexample.org.org";

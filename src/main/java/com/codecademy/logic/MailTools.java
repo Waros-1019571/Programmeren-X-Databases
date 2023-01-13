@@ -38,7 +38,7 @@ public class MailTools {
      */
     public static boolean validateMailAddress(String mailAddress) {
         try {
-            if (!mailAddress.contains("@") || mailAddress.split("@")[0].length() < 1 || mailAddress.split("@")[1].split("\\.").length > 2 ||
+            if (!mailAddress.contains("@") || mailAddress.split("@")[0].length() < 1 || mailAddress.split("@")[1].split("\\.").length <= 1 ||
                     mailAddress.split("@")[1].split("\\.")[0].length() < 1 || mailAddress.split("@")[1].split("\\.")[1].length() < 1) {
                 return false;
             }

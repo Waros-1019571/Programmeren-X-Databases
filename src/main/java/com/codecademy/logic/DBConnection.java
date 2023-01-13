@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DBConnection {
     private Connection connection = null;
-    private String connectionUrl = "jdbc:sqlserver://aei-sql2.avans.nl:1443;databaseName=White;user=white;password=Cheese;encrypt=true;trustServerCertificate=true;";// ;encrypt=true;trustServerCertificate=true"
+    private final String connectionUrl = "jdbc:sqlserver://aei-sql2.avans.nl:1443;databaseName=White;user=white;password=Cheese;encrypt=true;trustServerCertificate=true;";// ;encrypt=true;trustServerCertificate=true"
 
     public DBConnection(){
         connect();
