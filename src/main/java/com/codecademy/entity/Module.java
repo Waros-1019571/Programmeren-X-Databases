@@ -18,10 +18,12 @@ public class Module {
     private SimpleStringProperty version;
     private SimpleMapProperty<Student, Double> progressOfStudents;
     private Module module;
+    private SimpleStringProperty contactName;
+    private SimpleStringProperty contactEmail;
+
 
     public Module() {
         this.courseID = new SimpleIntegerProperty();
-
         this.title = new SimpleStringProperty();
         this.description = new SimpleStringProperty();
         this.serialNumber = new SimpleStringProperty();
@@ -29,6 +31,8 @@ public class Module {
         this.version = new SimpleStringProperty();
 //        this.module = new Simple<>()
         this.progressOfStudents = new SimpleMapProperty<>();
+        this.contactEmail = new SimpleStringProperty();
+        this.contactName = new SimpleStringProperty();
     }
 
     public int getCourseID() {
@@ -87,4 +91,19 @@ public class Module {
         return progressOfStudents.get();
     }
 
+    public String getContactName() {
+        return contactName.get();
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName.set(contactName);
+    }
+
+    public String getContactEmail() {
+        return contactEmail.get();
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail.set(contactEmail);
+    }
 }

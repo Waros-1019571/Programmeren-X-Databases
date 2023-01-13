@@ -24,28 +24,26 @@ public class ModuleDAO implements DAO<Module> {
     public List<Module> getAll() {
         Statement statement = null;
         ResultSet result = null;
-        ArrayList<Module> studentList = null;
+        ArrayList<Module> moduleList = null;
 
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
             result = statement.executeQuery("SELECT ID, SerialNumber, Version, ContactName, ContactEmail, Title, Description, PublicationDate, CourseID FROM MODULE");
-            studentList = new ArrayList<>();
+            moduleList = new ArrayList<>();
 
             while (result.next()) {
                 Module module = new Module();
                 module.setCourseID(result.getInt(1));
                 module.setSerialNumber(result.getString(2));
-//                student.setId(result.getInt(1));
-//                student.setEmail(result.getString(2));
-//                student.setName(result.getString(3));
-//                student.setBirthDate(result.getDate(4));
-//                student.setGender(result.getInt(5));
-//                student.setAddress(result.getString(6));
-//                student.setPostalCode(result.getString(7));
-//                student.setCity(result.getString(8));
-//                student.setCountry(result.getString(9));
-//                studentList.add(student);
+                module.setVersion(result.getString(3));
+                module.setContactName(result.getString(4));
+                module.setContactEmail(result.getString(5));
+                module.setTitle(result.getString(6));
+                module.setDescription(result.getString(7));
+                module.setPublicationDate(result.getDate(8));
+                module.setCourseID(result.getInt(9));
+                moduleList.add(module);
             }
 
         } catch (SQLException e) {
@@ -54,7 +52,7 @@ public class ModuleDAO implements DAO<Module> {
         } finally {
 //            closeRequest(statement, result);
         }
-        return studentList;
+        return moduleList;
     }
 
     @Override
