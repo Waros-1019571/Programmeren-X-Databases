@@ -123,7 +123,22 @@ public class CourseDAO implements DAO<Course> {
 
     @Override
     public boolean delete(Course course) {
-        return false;
+        PreparedStatement statement = null;
+        boolean isDeleted = false;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("DELETE FROM COURSE WHERE ID = ?");
+//            statement.setInt(1, Course.getCourseId()); // TODO: Get error that getCourseId is not static
+            isDeleted = statement.executeUpdate() > 0;
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+
+        return isDeleted;
     }
 
     private void closeRequest(Statement statement, ResultSet resultSet) {
