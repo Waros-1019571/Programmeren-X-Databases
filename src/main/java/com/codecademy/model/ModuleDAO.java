@@ -5,10 +5,7 @@ import com.codecademy.entity.Module;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,25 +47,83 @@ public class ModuleDAO implements DAO<Module> {
             e.printStackTrace();
 
         } finally {
-//            closeRequest(statement, result);
+            closeRequest(statement, result);
         }
         return moduleList;
     }
 
     @Override
     public boolean create(Module module) {
-        return false;
+        PreparedStatement statement = null;
+        boolean isCreated = false;
 
-        //INSERT INTO MODULE (SerialNumber, Version, ContactName, ContactEmail, Title, Description, PublicationDate, CourseID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("INSERT INTO MODULE (SerialNumber, Version, ContactName, ContactEmail, Title, Description, PublicationDate, CourseID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(1, module.getSerialNumber());
+            statement.setString(2, module.getVersion());
+            statement.setString(3, module.getContactName());
+            statement.setString(4, module.getContactEmail());
+            statement.setString(5, module.getTitle());
+            statement.setString(6, module.getDescription());
+            statement.setObject(7, module.getPublicationDate());
+            statement.setObject(8, module.getCourseID());
+            isCreated = (statement.executeUpdate() > 0);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+        return isCreated;
     }
 
     @Override
     public boolean update(Module module) {
-        return false;
+        PreparedStatement statement = null;
+        boolean isUpdated = false;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("UPDATE MODULE SET SerialNumber = ?,Version = ?,ContactName = ?,ContactEmail = ?,Title = ?,Description = ?,PublicationDate = ?,CourseID = ? WHERE CourseID = ?");
+            statement.setString(1, module.getSerialNumber());
+            statement.setString(2, module.getVersion());
+            statement.setString(3, module.getContactName());
+            statement.setString(4, module.getContactEmail());
+            statement.setString(5, module.getTitle());
+            statement.setString(6, module.getDescription());
+            statement.setObject(7, module.getPublicationDate());
+            statement.setObject(8, module.getCourseID());
+            statement.setObject(9, module.getCourseID());
+            isUpdated = (statement.executeUpdate() > 0);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+        return isUpdated;
     }
 
     @Override
     public boolean delete(Module module) {
         return false;
+    }
+
+    private void closeRequest(Statement statement, ResultSet resultSet) {
+        closeRequest(statement);
+        try {
+            resultSet.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeRequest(Statement statement) {
+        try {
+            statement.close();
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -60,21 +60,13 @@ public class CourseDAO implements DAO<Course> {
             Connection connection = dbConnection.getConnection();
 
             statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Name, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
-            String courseTitle = course.getTitle();
-            String courseTopic = course.getTopic();
-            String courseOwner = course.getCourseOwnerName();
-            String courseName = course.getName();
-            String description = course.getDescription();
-            int courseLevel = course.getCourseLevel();
-            int courseStatus = course.getCourseStatus();
-
-            statement.setString(1, courseTitle);
-            statement.setString(2, courseTopic);
-            statement.setString(3, courseOwner);
-            statement.setString(4, courseName);
-            statement.setString(5, description);
-            statement.setInt(6, courseLevel);
-            statement.setInt(7, courseStatus);
+            statement.setString(1, course.getTitle());
+            statement.setString(2, course.getTopic());
+            statement.setString(3, course.getCourseOwnerName());
+            statement.setString(4, course.getName());
+            statement.setString(5, course.getDescription());
+            statement.setInt(6, course.getCourseLevel());
+            statement.setInt(7, course.getCourseStatus());
             statement.executeUpdate();
 
             int rowsAffected = statement.executeUpdate();
@@ -132,7 +124,7 @@ public class CourseDAO implements DAO<Course> {
 //            statement.setInt(1, Course.getCourseId()); // TODO: Get error that getCourseId is not static
             isDeleted = statement.executeUpdate() > 0;
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeRequest(statement);
