@@ -85,7 +85,7 @@ public class ModuleDAO implements DAO<Module> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE MODULE SET SerialNumber = ?,Version = ?,ContactName = ?,ContactEmail = ?,Title = ?,Description = ?,PublicationDate = ?,CourseID = ? WHERE CourseID = ?");
+            statement = connection.prepareStatement("UPDATE MODULE SET SerialNumber = ?,Version = ?,ContactName = ?,ContactEmail = ?,Title = ?,Description = ?,PublicationDate = ?,CourseID = ? WHERE ID = ?");
             statement.setString(1, module.getSerialNumber());
             statement.setString(2, module.getVersion());
             statement.setString(3, module.getContactName());
@@ -94,7 +94,7 @@ public class ModuleDAO implements DAO<Module> {
             statement.setString(6, module.getDescription());
             statement.setObject(7, module.getPublicationDate());
             statement.setObject(8, module.getCourseID());
-            statement.setObject(9, module.getCourseID());
+            statement.setObject(9, module.getID());
             isUpdated = (statement.executeUpdate() > 0);
 
         } catch (SQLException e) {
@@ -107,7 +107,24 @@ public class ModuleDAO implements DAO<Module> {
 
     @Override
     public boolean delete(Module module) {
-        return false;
+
+        PreparedStatement statement = null;
+        boolean isDeleted = false;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("DELETE FROM MODULE WHERE ID = ?");
+            statement.setInt(1, module.getID());
+            isDeleted = statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+
+        return isDeleted;
+
     }
 
     private void closeRequest(Statement statement, ResultSet resultSet) {

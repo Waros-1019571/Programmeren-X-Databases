@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Module {
+
+    private SimpleIntegerProperty ID;
     private SimpleIntegerProperty courseID;
     private SimpleStringProperty title;
     private SimpleStringProperty description;
@@ -23,6 +25,7 @@ public class Module {
 
 
     public Module() {
+        this.ID = new SimpleIntegerProperty();
         this.courseID = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
         this.description = new SimpleStringProperty();
@@ -105,5 +108,12 @@ public class Module {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail.set(contactEmail);
+    }
+
+    public int getID() {
+        return ID.get();
+    }
+    public void setID(int ID) {
+        this.ID.set(ID);
     }
 }
