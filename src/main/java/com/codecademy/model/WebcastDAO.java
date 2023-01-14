@@ -65,7 +65,7 @@ public class WebcastDAO implements DAO<Webcast> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT w.ID, w.CourseID, w.VoiceActorID, w.Title, w.Description, w.URL, w.PublicationDate, w.Duration, va.Name, c.Name FROM WEBCAST as w JOIN VOICE_ACTOR AS va on w.VoiceActorID = va.ID JOIN COURSE as c on w.CourseID = c.ID");
+            result = statement.executeQuery("SELECT w.ID, w.CourseID, w.VoiceActorID, w.Title, w.Description, w.URL, w.PublicationDate, w.Duration, va.Name, c.Title FROM WEBCAST as w JOIN VOICE_ACTOR AS va on w.VoiceActorID = va.ID JOIN COURSE as c on w.CourseID = c.ID");
 
             while (result.next()) {
                 Webcast webcast = new Webcast();

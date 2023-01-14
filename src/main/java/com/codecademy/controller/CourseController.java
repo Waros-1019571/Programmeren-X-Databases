@@ -77,7 +77,7 @@ public class CourseController implements Controller {
     @FXML
     private void processCreateBTN() {
         Course course = new Course();
-        updateCourseWithFieldData(course);
+        updateCourseWithInputs(course);
         if (!courseDAO.create(course)) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Internal Error!");
@@ -98,7 +98,7 @@ public class CourseController implements Controller {
     @FXML
     private void processUpdateBTN() {
         Course course = courseTableView.getSelectionModel().getSelectedItem();
-        updateCourseWithFieldData(course);
+        updateCourseWithInputs(course);
         if (!courseDAO.update(course)) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Internal Error!");
@@ -163,10 +163,6 @@ public class CourseController implements Controller {
         ownerNameCol.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
         courseTableView.getColumns().add(ownerNameCol);
 
-        TableColumn<Course, String> ownerEmailCol = new TableColumn<>("Owner Email");
-        ownerEmailCol.setCellValueFactory(new PropertyValueFactory<>("ownerEmail"));
-        courseTableView.getColumns().add(ownerEmailCol);
-
         TableColumn<Course, String> courseLevelCol = new TableColumn<>("Course level");
         courseLevelCol.setCellValueFactory(cellData -> {
             Course course = cellData.getValue();
@@ -183,20 +179,27 @@ public class CourseController implements Controller {
         courseTableView.setItems(data);
     }
 
-    private void updateCourseWithFieldData(Course course) {
-        course.setTitle(titleField.getText());
-        course.setTopic(topicField.getText());
-        course.setOwnerName(ownerNameField.getText());
-        course.setOwnerEmail(ownerEmailField.getText());
-        course.setCourseLevel((int) toggleGroup.getSelectedToggle().getUserData());
-        course.setDescription(descriptionField.getText());
+    private boolean updateCourseWithInputs(Course course) {
+        try {
+            course.setTitle(titleField.getText());
+            course.setTopic(topicField.getText());
+            course.setOwnerName(ownerNameField.getText());
+            course.setCourseLevel((int) toggleGroup.getSelectedToggle().getUserData());
+            course.setDescription(descriptionField.getText());
+            return true;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid course input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
+        }
     }
 
     private void updateFields(Course course) {
         titleField.setText(course.getTitle());
         topicField.setText(course.getTopic());
         ownerNameField.setText(course.getOwnerName());
-        ownerEmailField.setText(course.getOwnerEmail());
         descriptionField.setText(course.getDescription());
         if (course.getCourseLevel() == 0) {
             beginnerRadioBTN.setSelected(true);

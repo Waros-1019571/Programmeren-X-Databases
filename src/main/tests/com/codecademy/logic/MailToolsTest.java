@@ -7,6 +7,30 @@ import static org.junit.Assert.assertTrue;
 
 public class MailToolsTest {
     @Test
+    public void validateMailAddressNullReturnsFalse() {
+        // Arrange
+        String input = null;
+
+        // Act
+        boolean result = MailTools.validateMailAddress(input);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void validateMailAddressEmptyReturnsFalse() {
+        // Arrange
+        String input = "";
+
+        // Act
+        boolean result = MailTools.validateMailAddress(input);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
     public void validateMailAddressNoMailboxPartReturnsFalse() {
         // Arrange
         String input = "@example.org";
