@@ -1,6 +1,5 @@
 package com.codecademy.model;
 
-import com.codecademy.entity.Certificate;
 import com.codecademy.entity.Course;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
@@ -9,7 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class CourseDAO implements DAO<Course> {
 
@@ -28,22 +26,23 @@ public class CourseDAO implements DAO<Course> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM COURSE");
+            result = statement.executeQuery("SELECT ID, Title, Topic, CourseOwner, Name, Description, CourseLevel  FROM COURSE");
             courseList = new ArrayList<>();
 
             while (result.next()) {
                 Course course = new Course();
-                course.setCourseOwnerName(result.getString(1));
+                course.setCourseId(result.getInt(1));
                 course.setTitle(result.getString(2));
                 course.setTopic(result.getString(3));
-                course.setDescription(result.getString(4));
+                course.setOwnerEmail(result.getString(4));
+                course.setOwnerName(result.getString(5));
+                course.setDescription(result.getString(6));
+                course.setCourseLevel(result.getInt(7));
 
                 courseList.add(course);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-
         } finally {
             closeRequest(statement, result);
         }
@@ -53,57 +52,33 @@ public class CourseDAO implements DAO<Course> {
     @Override
     public boolean create(Course course) {
         PreparedStatement statement = null;
-        ResultSet result = null;
         boolean isCreated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
-
             statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Name, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
-            statement.setString(1, course.getTitle());
-            statement.setString(2, course.getTopic());
-            statement.setString(3, course.getCourseOwnerName());
-            statement.setString(4, course.getName());
-            statement.setString(5, course.getDescription());
-            statement.setInt(6, course.getCourseLevel());
-            statement.setInt(7, course.getCourseStatus());
-            statement.executeUpdate();
-
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new NoSuchElementException("Update failed: no rows affected.");
-            }
-            isCreated = true;
-
+            putCourseInStatementWithoutID(statement, course);
+            isCreated = statement.executeUpdate() == 0;
         } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
-            closeRequest(statement, result);
+            closeRequest(statement);
         }
         return isCreated;
     }
 
     @Override
     public boolean update(Course course) {
-
         PreparedStatement statement = null;
         boolean isUpdated = false;
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE COURSE SET Title = ?,Topic = ?,CourseOwner = ?, Name = ?, Description = ?,CourseLevel = ? ,CourseStatus = ? WHERE Title = ?");
-            statement.setString(1, course.getTitle());
-            statement.setString(2, course.getTopic());
-            statement.setString(3, course.getCourseOwnerName());
-            statement.setString(4, course.getName());
-            statement.setString(5, course.getDescription());
-            statement.setInt(6, course.getCourseLevel());
-            statement.setInt(7, course.getCourseStatus());
-            statement.setString(8, course.getTitle());
-
+            statement = connection.prepareStatement("UPDATE COURSE SET Title = ?, Topic = ?, CourseOwner = ?, Name = ?, Description = ?,CourseLevel = ?, CourseStatus = ? WHERE ID = ?");
+            putCourseInStatementWithoutID(statement, course);
+            statement.setInt(8, course.getCourseId());
             isUpdated = statement.executeUpdate() > 0;
-
         } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();
         } finally {
@@ -120,17 +95,30 @@ public class CourseDAO implements DAO<Course> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("DELETE FROM COURSE WHERE ID = ?");
-//            statement.setInt(1, Course.getCourseId()); // TODO: Get error that getCourseId is not static
+            statement = connection.prepareStatement("DELETE FROM Course WHERE Id = ?");
+            statement.setInt(1, course.getCourseId());
             isDeleted = statement.executeUpdate() > 0;
-
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();
         } finally {
             closeRequest(statement);
         }
 
         return isDeleted;
+    }
+
+    private void putCourseInStatementWithoutID(PreparedStatement statement, Course course) {
+        try {
+            statement.setString(1, course.getTitle());
+            statement.setString(2, course.getTopic());
+            statement.setString(3, course.getOwnerEmail());
+            statement.setString(4, course.getOwnerName());
+            statement.setString(5, course.getDescription());
+            statement.setInt(6, course.getCourseLevel());
+            statement.setInt(7, 0);
+        } catch (SQLException | NoSuchElementException e) {
+            e.printStackTrace();
+        }
     }
 
     private void closeRequest(Statement statement, ResultSet resultSet) {

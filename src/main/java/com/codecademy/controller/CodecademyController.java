@@ -1,6 +1,7 @@
 package com.codecademy.controller;
 
 import com.codecademy.CodecademyApplication;
+import com.codecademy.logic.Controller;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.CourseDAO;
 import com.codecademy.model.OrganisationDAO;
@@ -39,6 +40,8 @@ public class CodecademyController {
     @FXML
     private Pane studentPane;
     @FXML
+    private Pane coursePane;
+    @FXML
     private TabPane tabPane;
 
     @FXML
@@ -60,6 +63,8 @@ public class CodecademyController {
                 loadStudent();
             }
         });
+
+        loadController("Course-view.fxml", new CourseController(), coursePane);
     }
 
     private void loadOrganisation() {
@@ -122,6 +127,20 @@ public class CodecademyController {
         try {
             studentPane.getChildren().clear();
             studentPane.getChildren().add(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadController(String recourseName, Controller controller, Pane pane) {
+        FXMLLoader loader = new FXMLLoader(CodecademyApplication.class.getResource(recourseName));
+        loader.setControllerFactory(newController -> {
+            controller.setDBConnection(dbConnection);
+            return controller;
+        });
+
+        try {
+            pane.getChildren().clear();
+            pane.getChildren().add(loader.load());
         } catch (IOException e) {
             e.printStackTrace();
         }

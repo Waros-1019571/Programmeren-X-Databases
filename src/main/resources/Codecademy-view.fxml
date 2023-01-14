@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -33,6 +34,22 @@
             </GridPane>
         </content>
       </Tab>
+      <Tab fx:id="studentTab" text="Student">
+        <content>
+            <ScrollPane fitToWidth="true">
+               <content>
+                  <GridPane fx:id="studentPane">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+        </content>
+      </Tab>
       <Tab fx:id="webcastTab" text="Webcast">
         <content>
             <GridPane fx:id="webcastPane">
@@ -45,17 +62,20 @@
             </GridPane>
         </content>
       </Tab>
-      <Tab fx:id="studentTab" text="Student">
+      <Tab text="Course">
         <content>
             <ScrollPane fitToWidth="true">
                <content>
-                  <GridPane fx:id="studentPane">
+                  <GridPane fx:id="coursePane">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="ALWAYS" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints vgrow="SOMETIMES" />
                      </rowConstraints>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
                   </GridPane>
                </content>
             </ScrollPane>
