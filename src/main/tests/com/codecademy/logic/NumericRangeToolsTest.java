@@ -7,8 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 public class NumericRangeToolsTest {
 
+    // isValidPercentage int
+
     @Test
-    public void isValidPercentageValueWithinValidRange0ReturnsTrue() {
+    public void isValidPercentageValueIntWithinValidRange0ReturnsTrue() {
         // Arrange
         int percentage = 0;
 
@@ -20,7 +22,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isValidPercentageValueWithinValidRange100ReturnsTrue() {
+    public void isValidPercentageValueIntWithinValidRange100ReturnsTrue() {
         // Arrange
         int percentage = 100;
 
@@ -32,7 +34,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isValidPercentageValueOutOfRangeLowReturnsFalse() {
+    public void isValidPercentageValueIntOutOfRangeLowReturnsFalse() {
         // Arrange
         int percentage = -1;
 
@@ -44,7 +46,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isValidPercentageValueOutOfRangeHighReturnsFalse() {
+    public void isValidPercentageValueIntOutOfRangeHighReturnsFalse() {
         // Arrange
         int percentage = 101;
 
@@ -54,6 +56,58 @@ public class NumericRangeToolsTest {
         // Assert
         assertFalse(result);
     }
+
+    // isValidPercentage double
+
+    @Test
+    public void isValidPercentageDoubleValueWithinValidRange0ReturnsTrue() {
+        // Arrange
+        double percentage = 0.0;
+
+        // Act
+        boolean result = NumericRangeTools.isValidPercentage(percentage);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isValidPercentageDoubleValueWithinValidRange100ReturnsTrue() {
+        // Arrange
+        double percentage = 100.0;
+
+        // Act
+        boolean result = NumericRangeTools.isValidPercentage(percentage);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isValidPercentageDoubleValueOutOfRangeLowReturnsFalse() {
+        // Arrange
+        double percentage = -0.00000000000001;
+
+        // Act
+        boolean result = NumericRangeTools.isValidPercentage(percentage);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void isValidPercentageDoubleValueOutOfRangeHighReturnsFalse() {
+        // Arrange
+        double percentage = 100.00000000000001;
+
+        // Act
+        boolean result = NumericRangeTools.isValidPercentage(percentage);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    // isWithinRange
 
     @Test
     public void isWithinRangeValueWithinValidRangeMinReturnsTrue() {

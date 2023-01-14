@@ -1,5 +1,7 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.NumericRangeTools;
+
 import java.time.LocalDate;
 import java.sql.Date;
 import java.util.HashMap;
@@ -18,7 +20,13 @@ public class Webcast {
     public Webcast() {
     }
 
-    public void addStudentProgress (Student student, Double progress) {
+    public void addStudentProgress (Student student, double progress) {
+        if (student == null) {
+            throw new IllegalArgumentException("Missing student");
+        }
+        if (!NumericRangeTools.isValidPercentage(progress)) {
+            throw new IllegalArgumentException("Progress is not a valid percentage");
+        }
         progressOfStudent.put(student, progress);
     }
 
