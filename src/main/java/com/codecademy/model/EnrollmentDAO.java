@@ -1,8 +1,6 @@
 package com.codecademy.model;
 
-import com.codecademy.entity.Student;
-import com.codecademy.entity.Webcast;
-import com.codecademy.entity.WebcastProgression;
+import com.codecademy.entity.*;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
 
@@ -11,60 +9,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class WebcastProgressionDAO implements DAO<WebcastProgression> {
+public class EnrollmentDAO implements DAO<Enrollment> {
 
     private final DBConnection dbConnection;
 
-    public WebcastProgressionDAO(DBConnection dbConnection) {
+    public EnrollmentDAO(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
     }
 
     @Override
-    public List<WebcastProgression> getAll() {
+    public List<Enrollment> getAll() {
         Statement statement = null;
         ResultSet result = null;
-        List<WebcastProgression> webcastProgressionList = new ArrayList<>();
+        List<Enrollment> enrollmentList = new ArrayList<>();
 
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT p.StudentID, s.Name, p.WebcastID, w.Title, p.Progress FROM STUDENT_WEBCAST AS p JOIN STUDENT AS s ON s.ID = p.StudentID JOIN WEBCAST as w ON w.ID = p.WebcastID");
+            result = statement.executeQuery("SELECT e.StudentID, e.CourseID, e.CertificateID FROM ENROLLMENT AS e JOIN STUDENT AS s ON s.ID = e.StudentID JOIN COURSE AS co ON co.ID = e.CourseID JOIN CERTIFICATE AS ce ON ce.ID = e.CertificateID");
 
             while (result.next()) {
-                WebcastProgression webcastProgression = new WebcastProgression();
+                Enrollment enrollment = new Enrollment();
 
                 Student student = new Student();
                 student.setId(result.getInt(1));
-                student.setName(result.getString(2));
-                webcastProgression.setStudent(student);
+                enrollment.setStudent(student);
 
-                Webcast webcast = new Webcast();
-                webcast.setId(result.getInt(3));
-                webcast.setTitle(result.getString(4));
-                webcastProgression.setWebcast(webcast);
+                Course course = new Course();
+                course.setCourseId(result.getInt(2));
+                enrollment.setCourse(course);
 
-                webcastProgression.setProgress(result.getInt(5));
-                webcastProgressionList.add(webcastProgression);
+                Certificate certificate = new Certificate();
+                certificate.setCertificateId(result.getInt(3));
+                if (certificate.getCertificateId() != 0) { // If no certificate ID was given, the ID is set to 0
+                    enrollment.setCertificate(certificate);
+                }
+
+                enrollmentList.add(enrollment);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeRequest(statement,result);
         }
-        return webcastProgressionList;
+        return enrollmentList;
     }
 
     @Override
-    public boolean create(WebcastProgression webcastProgression) {
+    public boolean create(Enrollment enrollment) {
         boolean result = false;
         PreparedStatement statement = null;
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO STUDENT_WEBCAST (StudentID, WebcastID, Progress) VALUES(?,?,?)");
-            statement.setInt(1, webcastProgression.getStudent().getId());
-            statement.setInt(2, webcastProgression.getWebcast().getId());
-            statement.setInt(3, webcastProgression.getProgress());
+            statement = connection.prepareStatement("INSERT INTO ENROLLMENT (StudentID, CourseID) VALUES(?,?)");
+            statement.setInt(1, enrollment.getStudent().getId());
+            statement.setInt(2, enrollment.getCourse().getCourseId());
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
@@ -83,16 +83,16 @@ public class WebcastProgressionDAO implements DAO<WebcastProgression> {
     }
 
     @Override
-    public boolean update(WebcastProgression webcastProgression) {
+    public boolean update(Enrollment enrollment) {
         boolean result = false;
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = connection.prepareStatement("UPDATE STUDENT_WEBCAST SET Progress = ? WHERE StudentID = ? AND WebcastID = ?");
-            statement.setInt(1, webcastProgression.getProgress());
-            statement.setInt(2, webcastProgression.getStudent().getId());
-            statement.setInt(3, webcastProgression.getWebcast().getId());
+            statement = connection.prepareStatement("UPDATE ENROLLMENT SET CertificateID = ? WHERE StudentID = ? AND CourseID = ?");
+            statement.setInt(1, enrollment.getCertificate().getCertificateId());
+            statement.setInt(2, enrollment.getStudent().getId());
+            statement.setInt(3, enrollment.getCourse().getCourseId());
 
             if (statement.executeUpdate() == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
@@ -107,15 +107,15 @@ public class WebcastProgressionDAO implements DAO<WebcastProgression> {
     }
 
     @Override
-    public boolean delete(WebcastProgression webcastProgression) {
+    public boolean delete(Enrollment enrollment) {
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
         int rowsDeleted = 0;
 
         try {
-            statement = connection.prepareStatement("DELETE FROM STUDENT_WEBCAST WHERE StudentID = ? AND WebcastID = ?");
-            statement.setInt(1, webcastProgression.getStudent().getId());
-            statement.setInt(2, webcastProgression.getWebcast().getId());
+            statement = connection.prepareStatement("DELETE FROM ENROLLMENT WHERE StudentID = ? AND CourseID = ?");
+            statement.setInt(1, enrollment.getStudent().getId());
+            statement.setInt(2, enrollment.getCourse().getCourseId());
             rowsDeleted = statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
