@@ -34,6 +34,7 @@
             <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
             <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
             <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
          </rowConstraints>
          <children>
             <Label text="Title" />
@@ -44,17 +45,19 @@
             <TextField fx:id="webcastTitleField" GridPane.columnIndex="1" />
             <TextField fx:id="webcastDescriptionField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="webcastURLField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <DatePicker fx:id="webcastPublicationDateField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="webcastDurationField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <ComboBox fx:id="voiceActorComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Voice actor" GridPane.rowIndex="5" />
+            <ComboBox fx:id="courseComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Course" GridPane.rowIndex="6" />
+            <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <children>
                   <Button mnemonicParsing="false" onAction="#processCreateBTN" text="Create" />
                   <Button mnemonicParsing="false" onAction="#processUpdateBTN" text="Update" />
                   <Button mnemonicParsing="false" onAction="#processDeleteBTN" text="Delete" />
                </children>
             </HBox>
-            <DatePicker fx:id="webcastPublicationDateField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ComboBox fx:id="voiceActorComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label text="Voice actor" GridPane.rowIndex="5" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

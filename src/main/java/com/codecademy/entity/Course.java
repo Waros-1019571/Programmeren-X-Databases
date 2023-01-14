@@ -78,4 +78,8 @@ public class Course {
         return "Unknown";
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
 }
