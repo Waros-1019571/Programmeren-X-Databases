@@ -56,10 +56,6 @@ public class WebcastDAO implements DAO<Webcast> {
 
     }
 
-    private void addCourse(Webcast webcast, int courseID) {
-        // TODO
-    }
-
     @Override
     public List<Webcast> getAll() {
         Statement statement = null;
@@ -69,16 +65,16 @@ public class WebcastDAO implements DAO<Webcast> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT w.ID, w.CourseID, w.VoiceActorID, w.Title, w.Description, w.URL, w.PublicationDate, w.Duration, va.Name FROM WEBCAST as w LEFT JOIN VOICE_ACTOR AS va on w.VoiceActorID = va.ID");
+            result = statement.executeQuery("SELECT w.ID, w.CourseID, w.VoiceActorID, w.Title, w.Description, w.URL, w.PublicationDate, w.Duration, va.Name, c.Title FROM WEBCAST as w JOIN VOICE_ACTOR AS va on w.VoiceActorID = va.ID JOIN COURSE as c on w.CourseID = c.ID");
 
             while (result.next()) {
                 Webcast webcast = new Webcast();
                 VoiceActor voiceActor = new VoiceActor();
                 webcast.setId(result.getInt(1));
-                addCourse(webcast, result.getInt(2));
 
                 Course course = new Course();
                 course.setCourseId(result.getInt(2));
+                course.setTitle(result.getString(10));
                 webcast.setCourse(course);
 
                 webcast.setTitle(result.getString(4));

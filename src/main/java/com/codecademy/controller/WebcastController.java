@@ -1,10 +1,12 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Course;
+import com.codecademy.entity.Student;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.entity.Webcast;
 import com.codecademy.logic.Controller;
 import com.codecademy.logic.DBConnection;
+import com.codecademy.model.CourseDAO;
 import com.codecademy.model.VoiceActorDAO;
 import com.codecademy.model.WebcastDAO;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -22,6 +24,7 @@ public class WebcastController implements Controller {
     private DBConnection dbConnection;
     private VoiceActorDAO voiceActorDAO;
     private WebcastDAO webcastDAO;
+    private CourseDAO courseDAO;
 
     @FXML
     private TableView<Webcast> webcastTableView;
@@ -49,6 +52,7 @@ public class WebcastController implements Controller {
     public void initialize() {
         this.webcastDAO = new WebcastDAO(dbConnection);
         this.voiceActorDAO = new VoiceActorDAO(dbConnection);
+        this.courseDAO = new CourseDAO(dbConnection);
 
         webcastTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -58,10 +62,12 @@ public class WebcastController implements Controller {
                 webcastPublicationDateField.setValue(webcastTableView.getSelectionModel().getSelectedItem().getPublicationDate());
                 webcastDurationField.setText("" + webcastTableView.getSelectionModel().getSelectedItem().getDuration());
                 voiceActorComboBox.setValue(webcastTableView.getSelectionModel().getSelectedItem().getVoiceActor());
+                courseComboBox.setValue(webcastTableView.getSelectionModel().getSelectedItem().getCourse());
             }
         });
         loadWebcasts();
         loadVoiceActorComboBox();
+        loadCourseComboBox();
     }
     @FXML
     private void processCreateBTN() {
@@ -70,13 +76,9 @@ public class WebcastController implements Controller {
         }
 
         Webcast webcast = new Webcast();
-        webcast.setCourse(new Course());
-        webcast.setVoiceActor(voiceActorComboBox.getValue());
-        webcast.setTitle(webcastTitleField.getText());
-        webcast.setDescription(webcastDescriptionField.getText());
-        webcast.setUrl(webcastURLField.getText());
-        webcast.setPublicationDate(webcastPublicationDateField.getValue());
-        webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
+        if (!updateWebcastWithInputs(webcast)) {
+            return;
+        }
 
         webcastDAO.create(webcast);
         loadWebcasts();
@@ -131,12 +133,9 @@ public class WebcastController implements Controller {
 
         if (result.get() == ButtonType.OK){
             Webcast webcast = webcastTableView.getSelectionModel().getSelectedItem();
-            webcast.setTitle(webcastTitleField.getText());
-            webcast.setDescription(webcastDescriptionField.getText());
-            webcast.setUrl(webcastURLField.getText());
-            webcast.setPublicationDate(webcastPublicationDateField.getValue());
-            webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
-            webcast.setVoiceActor(voiceActorComboBox.getValue());
+            if (!updateWebcastWithInputs(webcast)) {
+                return;
+            }
 
             if (!webcastDAO.update(webcast)) {
                 alert = new Alert(Alert.AlertType.ERROR);
@@ -162,7 +161,7 @@ public class WebcastController implements Controller {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Input error");
         alert.setHeaderText("Input error!");
-        alert.setContentText("Please put a number in the field 'Duration'!");
+        alert.setContentText("Please put a positive number in the field 'Duration'!");
         alert.show();
         return false;
     }
@@ -176,6 +175,17 @@ public class WebcastController implements Controller {
 
         ObservableList<VoiceActor> data = FXCollections.observableArrayList(list);
         voiceActorComboBox.setItems(data);
+    }
+
+    private void loadCourseComboBox() {
+        List<Course> list = courseDAO.getAll();
+        if (list == null || list.size() == 0) {
+            System.out.println("Course list is empty for comboBox");
+            return;
+        }
+
+        ObservableList<Course> data = FXCollections.observableArrayList(list);
+        courseComboBox.setItems(data);
     }
 
     private void loadWebcasts() {
@@ -240,5 +250,24 @@ public class WebcastController implements Controller {
         alert.setContentText("Webcast hasn't been selected.\nPlease select an webcast!");
         alert.show();
         return true;
+    }
+
+    private boolean updateWebcastWithInputs(Webcast webcast) {
+        try {
+            webcast.setCourse(courseComboBox.getValue());
+            webcast.setVoiceActor(voiceActorComboBox.getValue());
+            webcast.setTitle(webcastTitleField.getText());
+            webcast.setDescription(webcastDescriptionField.getText());
+            webcast.setUrl(webcastURLField.getText());
+            webcast.setPublicationDate(webcastPublicationDateField.getValue());
+            webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
+            return true;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid webcast input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
+        }
     }
 }

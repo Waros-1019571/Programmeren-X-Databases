@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class StudentController implements Controller {
@@ -85,7 +86,10 @@ public class StudentController implements Controller {
     @FXML
     private void processCreateBTN() {
         Student student = new Student();
-        updateStudentWithInputs(student);
+        if (!updateStudentWithInputs(student)) {
+            return;
+        }
+
         if (!studentDAO.create(student)) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Internal Error!");
@@ -93,7 +97,6 @@ public class StudentController implements Controller {
             alert.show();
             return;
         }
-
         alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Creation succeeded!");
         alert.setContentText("Student has been created!");
@@ -118,12 +121,14 @@ public class StudentController implements Controller {
             throw new RuntimeException();
         }
 
-        if (result.get() != ButtonType.OK){
+        if (result.get() != ButtonType.OK) {
             return;
         }
 
         Student student = studentTableView.getSelectionModel().getSelectedItem();
-        updateStudentWithInputs(student);
+        if (!updateStudentWithInputs(student)) {
+            return;
+        }
 
         if (!studentDAO.update(student)) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -177,15 +182,28 @@ public class StudentController implements Controller {
         studentTableView.getItems().remove(studentTableView.getSelectionModel().getSelectedItem());
     }
 
-    private void updateStudentWithInputs(Student student){
-        student.setName(nameField.getText());
-        student.setEmail(emailField.getText());
-        student.setBirthDate(birthdateField.getValue());
-        student.setGender((int) group.getSelectedToggle().getUserData());
-        student.setAddress(addressField.getText());
-        student.setPostalCode(postalCodeField.getText());
-        student.setCity(cityField.getText());
-        student.setCountry(countryField.getText());
+    private boolean updateStudentWithInputs(Student student) {
+        try {
+            student.setName(nameField.getText());
+            student.setEmail(emailField.getText());
+            student.setBirthDate(birthdateField.getValue());
+            Toggle toggledGender = group.getSelectedToggle();
+            if (toggledGender == null) {
+                throw new IllegalArgumentException("Missing gender");
+            }
+            student.setGender((int)toggledGender.getUserData());
+            student.setAddress(addressField.getText());
+            student.setPostalCode(postalCodeField.getText());
+            student.setCity(cityField.getText());
+            student.setCountry(countryField.getText());
+            return true;
+        } catch (Exception e) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid student input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
+        }
     }
 
     private void emptyFields() {

@@ -1,5 +1,7 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.NumericRangeTools;
+import com.codecademy.logic.StringTools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -18,6 +20,9 @@ public class VoiceActor {
     }
 
     public void setId(int id) {
+        if (!NumericRangeTools.isPositiveNumber(id)) {
+            throw new IllegalArgumentException("ID is negative");
+        }
         this.id.set(id);
     }
 
@@ -26,6 +31,9 @@ public class VoiceActor {
     }
 
     public void setName(String name) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(name)) {
+            throw new IllegalArgumentException("Name is empty");
+        }
         this.name.set(name);
     }
 
@@ -34,11 +42,14 @@ public class VoiceActor {
     }
 
     public void setOrganisation(Organisation organisation) {
+        if (organisation == null) {
+            throw new IllegalArgumentException("Missing organisation");
+        }
         this.organisation = organisation;
     }
 
     @Override
     public String toString() {
-        return getName() ;
+        return getName();
     }
 }

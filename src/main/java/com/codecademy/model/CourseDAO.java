@@ -26,7 +26,7 @@ public class CourseDAO implements DAO<Course> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT ID, Title, Topic, CourseOwner, Name, Description, CourseLevel  FROM COURSE");
+            result = statement.executeQuery("SELECT ID, Title, Topic, CourseOwner, Description, CourseLevel  FROM COURSE");
             courseList = new ArrayList<>();
 
             while (result.next()) {
@@ -34,11 +34,9 @@ public class CourseDAO implements DAO<Course> {
                 course.setCourseId(result.getInt(1));
                 course.setTitle(result.getString(2));
                 course.setTopic(result.getString(3));
-                course.setOwnerEmail(result.getString(4));
-                course.setOwnerName(result.getString(5));
-                course.setDescription(result.getString(6));
-                course.setCourseLevel(result.getInt(7));
-
+                course.setOwnerName(result.getString(4));
+                course.setDescription(result.getString(5));
+                course.setCourseLevel(result.getInt(6));
                 courseList.add(course);
             }
         } catch (SQLException e) {
@@ -56,7 +54,7 @@ public class CourseDAO implements DAO<Course> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Name, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
             putCourseInStatementWithoutID(statement, course);
             isCreated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -75,7 +73,7 @@ public class CourseDAO implements DAO<Course> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE COURSE SET Title = ?, Topic = ?, CourseOwner = ?, Name = ?, Description = ?,CourseLevel = ?, CourseStatus = ? WHERE ID = ?");
+            statement = connection.prepareStatement("UPDATE COURSE SET Title = ?, Topic = ?, CourseOwner = ?, Description = ?,CourseLevel = ?, CourseStatus = ? WHERE ID = ?");
             putCourseInStatementWithoutID(statement, course);
             statement.setInt(8, course.getCourseId());
             isUpdated = statement.executeUpdate() > 0;
@@ -111,11 +109,10 @@ public class CourseDAO implements DAO<Course> {
         try {
             statement.setString(1, course.getTitle());
             statement.setString(2, course.getTopic());
-            statement.setString(3, course.getOwnerEmail());
-            statement.setString(4, course.getOwnerName());
-            statement.setString(5, course.getDescription());
-            statement.setInt(6, course.getCourseLevel());
-            statement.setInt(7, 0);
+            statement.setString(3, course.getOwnerName());
+            statement.setString(4, course.getDescription());
+            statement.setInt(5, course.getCourseLevel());
+            statement.setInt(6, 0);
         } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();
         }

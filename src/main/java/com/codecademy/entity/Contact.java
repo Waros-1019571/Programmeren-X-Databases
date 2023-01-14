@@ -1,5 +1,7 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.MailTools;
+import com.codecademy.logic.StringTools;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Contact {
@@ -16,6 +18,9 @@ public class Contact {
     }
 
     public void setName(String name) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(name)) {
+            throw new IllegalArgumentException("Name is empty");
+        }
         this.name.set(name);
     }
 
@@ -24,6 +29,9 @@ public class Contact {
     }
 
     public void setEmail(String email) {
+        if (!MailTools.validateMailAddress(email)) {
+            throw new IllegalArgumentException("Email address invalid");
+        }
         this.email.set(email);
     }
 }

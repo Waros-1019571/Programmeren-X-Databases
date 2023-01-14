@@ -2,6 +2,7 @@ package com.codecademy.controller;
 
 import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
+import com.codecademy.entity.Webcast;
 import com.codecademy.logic.Controller;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.OrganisationDAO;
@@ -71,8 +72,9 @@ public class VoiceActorController implements Controller {
         }
 
         VoiceActor voiceActor = new VoiceActor();
-        voiceActor.setName(voiceActorNameField.getText());
-        voiceActor.setOrganisation(organisationComboBox.getValue());
+        if (!updateVoiceActorWithInputs(voiceActor)) {
+            return;
+        }
         if (!voiceActorDAO.create(voiceActor)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Creation Error");
@@ -103,8 +105,9 @@ public class VoiceActorController implements Controller {
         }
 
         VoiceActor voiceActor = voiceActorTableView.getSelectionModel().getSelectedItem();
-        voiceActor.setName(voiceActorNameField.getText());
-        voiceActor.setOrganisation(organisationComboBox.getValue());
+        if (!updateVoiceActorWithInputs(voiceActor)) {
+            return;
+        }
         if (!voiceActorDAO.update(voiceActor)) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Update Error");
@@ -204,5 +207,19 @@ public class VoiceActorController implements Controller {
     private void clearInputs() {
         voiceActorNameField.setText("");
         organisationComboBox.setValue(null);
+    }
+
+    private boolean updateVoiceActorWithInputs(VoiceActor voiceActor) {
+        try {
+            voiceActor.setName(voiceActorNameField.getText());
+            voiceActor.setOrganisation(organisationComboBox.getValue());
+            return true;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid voice actor input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
+        }
     }
 }

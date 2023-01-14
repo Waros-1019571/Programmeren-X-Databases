@@ -1,5 +1,8 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.NumericRangeTools;
+import com.codecademy.logic.StringTools;
+
 import java.time.LocalDate;
 import java.sql.Date;
 import java.util.HashMap;
@@ -18,7 +21,13 @@ public class Webcast {
     public Webcast() {
     }
 
-    public void addStudentProgress (Student student, Double progress) {
+    public void addStudentProgress(Student student, double progress) {
+        if (student == null) {
+            throw new NullPointerException("Missing student");
+        }
+        if (!NumericRangeTools.isValidPercentage(progress)) {
+            throw new IllegalArgumentException("Progress is not a valid percentage");
+        }
         progressOfStudent.put(student, progress);
     }
 
@@ -27,6 +36,9 @@ public class Webcast {
     }
 
     public void setDuration(int duration) {
+        if (!NumericRangeTools.isPositiveNumber(duration)) {
+            throw new IllegalArgumentException("Duration is not a positive number");
+        }
         this.duration = duration;
     }
 
@@ -35,10 +47,16 @@ public class Webcast {
     }
 
     public void setPublicationDate(Date publicationDate) {
+        if (publicationDate == null) {
+            throw new NullPointerException("Missing publication date");
+        }
         this.publicationDate = publicationDate;
     }
 
     public void setPublicationDate(LocalDate publicationDate) {
+        if (publicationDate == null) {
+            throw new NullPointerException("Missing publication date");
+        }
         this.publicationDate = Date.valueOf(publicationDate);
     }
 
@@ -47,6 +65,9 @@ public class Webcast {
     }
 
     public void setUrl(String url) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(url)) {
+            throw new IllegalArgumentException("URL is empty");
+        }
         this.url = url;
     }
 
@@ -55,6 +76,9 @@ public class Webcast {
     }
 
     public void setVoiceActor(VoiceActor voiceActor) {
+        if (voiceActor == null) {
+            throw new IllegalArgumentException("Missing voice actor");
+        }
         this.voiceActor = voiceActor;
     }
 
@@ -63,6 +87,9 @@ public class Webcast {
     }
 
     public void setId(int id) {
+        if (!NumericRangeTools.isPositiveNumber(id)) {
+            throw new IllegalArgumentException("ID is not a positive number");
+        }
         this.id = id;
     }
 
@@ -71,6 +98,9 @@ public class Webcast {
     }
 
     public void setTitle(String title) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(title)) {
+            throw new IllegalArgumentException("Title is empty");
+        }
         this.title = title;
     }
 
@@ -79,6 +109,9 @@ public class Webcast {
     }
 
     public void setDescription(String description) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(description)) {
+            throw new IllegalArgumentException("Description is empty");
+        }
         this.description = description;
     }
 
@@ -87,6 +120,9 @@ public class Webcast {
     }
 
     public void setCourse(Course course) {
+        if (course == null) {
+            throw new IllegalArgumentException("Missing course");
+        }
         this.course = course;
     }
 }

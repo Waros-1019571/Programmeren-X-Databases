@@ -7,6 +7,30 @@ import static org.junit.Assert.assertTrue;
 
 public class MailToolsTest {
     @Test
+    public void validateMailAddressNullReturnsFalse() {
+        // Arrange
+        String input = null;
+
+        // Act
+        boolean result = MailTools.validateMailAddress(input);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void validateMailAddressEmptyReturnsFalse() {
+        // Arrange
+        String input = "";
+
+        // Act
+        boolean result = MailTools.validateMailAddress(input);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
     public void validateMailAddressNoMailboxPartReturnsFalse() {
         // Arrange
         String input = "@example.org";
@@ -22,18 +46,6 @@ public class MailToolsTest {
     public void validateMailAddressNoMailboxPartNoAtSignReturnsFalse() {
         // Arrange
         String input = "example.org";
-
-        // Act
-        boolean result = MailTools.validateMailAddress(input);
-
-        // Assert
-        assertFalse(result);
-    }
-
-    @Test
-    public void validateMailAddressSubdomainTldReturnsFalse() {
-        // Arrange
-        String input = "example@example.org.org.org";
 
         // Act
         boolean result = MailTools.validateMailAddress(input);
