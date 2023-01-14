@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class WebcastDAO implements DAO<Webcast> {
-    private final DBConnection dbConnection;
-    private final VoiceActorDAO voiceActorDAO;
+    private DBConnection dbConnection;
+    private VoiceActorDAO voiceActorDAO;
 
-    public WebcastDAO(DBConnection dbConnection, VoiceActorDAO voiceActorDAO) {
+    public WebcastDAO(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
-        this.voiceActorDAO = voiceActorDAO;
+        this.voiceActorDAO = new VoiceActorDAO(dbConnection);
     }
 
     private void addVoiceActor(Webcast webcast, int voiceActorID) throws SQLException {
@@ -76,7 +76,11 @@ public class WebcastDAO implements DAO<Webcast> {
                 VoiceActor voiceActor = new VoiceActor();
                 webcast.setId(result.getInt(1));
                 addCourse(webcast, result.getInt(2));
-                webcast.setCourse(new Course());
+
+                Course course = new Course();
+                course.setCourseId(result.getInt(2));
+                webcast.setCourse(course);
+
                 webcast.setTitle(result.getString(4));
                 webcast.setDescription(result.getString(5));
                 webcast.setUrl(result.getString(6));

@@ -1,34 +1,36 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Organisation;
+import com.codecademy.logic.Controller;
+import com.codecademy.logic.DBConnection;
 import com.codecademy.model.OrganisationDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
+
 import java.util.List;
 import java.util.Optional;
 
-public class OrganisationOverviewController {
+public class OrganisationController implements Controller {
+    private DBConnection dbConnection;
+    private OrganisationDAO organisationDAO;
+
     @FXML
     TableView<Organisation> organisationTableView;
     @FXML
     TextField organisationNameField;
-    OrganisationDAO organisationDAO;
-    Pane root;
 
-    public void setOrganisationDAO(OrganisationDAO organisationDAO) {
-        this.organisationDAO = organisationDAO;
-    }
-
-    public void setRoot(Pane root) {
-        this.root = root;
+    @Override
+    public void setDBConnection(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
     }
 
     @FXML
     public void initialize() {
+        this.organisationDAO = new OrganisationDAO(dbConnection);
+
         loadOrganisations();
 
         organisationTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -100,6 +102,7 @@ public class OrganisationOverviewController {
             alert.setTitle("Update Error");
             alert.setContentText("Organisation couldn't be Updated!");
             alert.show();
+            loadOrganisations();
             return;
         }
 

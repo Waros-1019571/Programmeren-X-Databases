@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Organisation {
     private SimpleIntegerProperty organisationId;
-    private final SimpleStringProperty name;
+    private SimpleStringProperty name;
 
     public Organisation() {
         this.organisationId = new SimpleIntegerProperty();
