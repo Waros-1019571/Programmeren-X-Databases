@@ -90,7 +90,7 @@ public class Module {
         }
         this.version.set(version);
     }
-    
+
     public ObservableMap<Student, Double> getProgressOfStudents() {
         return progressOfStudents.get();
     }
