@@ -3,6 +3,8 @@ package com.codecademy.controller;
 import com.codecademy.entity.Course;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.entity.Webcast;
+import com.codecademy.logic.Controller;
+import com.codecademy.logic.DBConnection;
 import com.codecademy.model.VoiceActorDAO;
 import com.codecademy.model.WebcastDAO;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -16,7 +18,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class WebcastController {
+public class WebcastController implements Controller {
+    private DBConnection dbConnection;
+    private VoiceActorDAO voiceActorDAO;
+    private WebcastDAO webcastDAO;
+
     @FXML
     private TableView<Webcast> webcastTableView;
     @FXML
@@ -34,19 +40,16 @@ public class WebcastController {
     @FXML
     private TextField webcastDurationField;
 
-    VoiceActorDAO voiceActorDAO;
-    WebcastDAO webcastDAO;
-
-    public void setVoiceActorDAO(VoiceActorDAO voiceActorDAO) {
-        this.voiceActorDAO = voiceActorDAO;
-    }
-
-    public void setWebcastDAO(WebcastDAO webcastDAO) {
-        this.webcastDAO = webcastDAO;
+    @Override
+    public void setDBConnection(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
     }
 
     @FXML
     public void initialize() {
+        this.webcastDAO = new WebcastDAO(dbConnection);
+        this.voiceActorDAO = new VoiceActorDAO(dbConnection);
+
         webcastTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 webcastTitleField.setText(webcastTableView.getSelectionModel().getSelectedItem().getTitle());
@@ -77,7 +80,6 @@ public class WebcastController {
 
         webcastDAO.create(webcast);
         loadWebcasts();
-
     }
 
     @FXML

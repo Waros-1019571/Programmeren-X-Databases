@@ -1,7 +1,5 @@
 package com.codecademy.logic;
 
-import javafx.fxml.Initializable;
-
-public interface Controller extends Initializable {
+public interface Controller {
     void setDBConnection(DBConnection dbConnection);
 }

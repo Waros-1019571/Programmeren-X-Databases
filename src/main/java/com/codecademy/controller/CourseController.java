@@ -13,9 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class CourseController implements Controller {
     private DBConnection dbConnection;
@@ -47,11 +45,12 @@ public class CourseController implements Controller {
     @Override
     public void setDBConnection(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
-        this.courseDAO = new CourseDAO(dbConnection);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML
+    public void initialize() {
+        this.courseDAO = new CourseDAO(dbConnection);
+
         moduleTitledPane.setExpanded(false);
         moduleTitledPane.setOnMouseClicked(this::toggleTitlePane);
 
@@ -64,10 +63,12 @@ public class CourseController implements Controller {
         expertRadioBTN.setToggleGroup(toggleGroup);
 
         courseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                clearFields();
-                updateFields(newSelection);
+            if (newSelection == null) {
+                deSelectItemAndClearFields();
+                return;
             }
+            clearFields();
+            updateFields(newSelection);
         });
 
         loadCourses();
@@ -103,6 +104,7 @@ public class CourseController implements Controller {
             alert.setTitle("Internal Error!");
             alert.setContentText("Internal Error course couldn't be Updated!");
             alert.show();
+            loadCourses();
             return;
         }
 
@@ -131,7 +133,7 @@ public class CourseController implements Controller {
         alert.setContentText("Course has been deleted!");
         alert.show();
 
-        loadCourses();
+        courseTableView.getItems().remove(courseTableView.getSelectionModel().getSelectedIndex());
     }
 
     @FXML

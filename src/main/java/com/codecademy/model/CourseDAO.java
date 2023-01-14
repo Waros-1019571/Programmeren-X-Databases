@@ -58,7 +58,7 @@ public class CourseDAO implements DAO<Course> {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("INSERT INTO COURSE (Title, Topic, CourseOwner, Name, Description, CourseLevel, CourseStatus) VALUES(?,?,?,?,?,?,?)");
             putCourseInStatementWithoutID(statement, course);
-            isCreated = statement.executeUpdate() == 0;
+            isCreated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
 

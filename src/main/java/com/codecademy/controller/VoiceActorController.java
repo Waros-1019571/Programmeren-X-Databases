@@ -2,18 +2,24 @@ package com.codecademy.controller;
 
 import com.codecademy.entity.Organisation;
 import com.codecademy.entity.VoiceActor;
+import com.codecademy.logic.Controller;
+import com.codecademy.logic.DBConnection;
 import com.codecademy.model.OrganisationDAO;
 import com.codecademy.model.VoiceActorDAO;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+
 import java.util.List;
 import java.util.Optional;
 
-public class VoiceActorController {
+public class VoiceActorController implements Controller {
+    private DBConnection dbConnection;
+    private VoiceActorDAO voiceActorDAO;
+    private OrganisationDAO organisationDAO;
+
     @FXML
     TextField voiceActorNameField;
     @FXML
@@ -21,19 +27,16 @@ public class VoiceActorController {
     @FXML
     private ComboBox<Organisation> organisationComboBox;
 
-    VoiceActorDAO voiceActorDAO;
-    OrganisationDAO organisationDAO;
-
-    public void setVoiceActorDAO(VoiceActorDAO voiceActorDAO) {
-        this.voiceActorDAO = voiceActorDAO;
-    }
-
-    public void setOrganisationDAO(OrganisationDAO organisationDAO) {
-        this.organisationDAO = organisationDAO;
+    @Override
+    public void setDBConnection(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
     }
 
     @FXML
     public void initialize() {
+        this.voiceActorDAO = new VoiceActorDAO(dbConnection);
+        this.organisationDAO = new OrganisationDAO(dbConnection);
+
         // update fields to selected item from tableView
         voiceActorTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -107,6 +110,7 @@ public class VoiceActorController {
             alert.setTitle("Update Error");
             alert.setContentText("Voice actor couldn't be updated!");
             alert.show();
+            loadVoiceActors();
             return;
         }
 
@@ -157,7 +161,6 @@ public class VoiceActorController {
             alert.show();
 
             voiceActorTableView.getItems().remove(voiceActorTableView.getSelectionModel().getSelectedIndex());
-            loadVoiceActors();
         }
     }
 

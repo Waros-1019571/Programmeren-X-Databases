@@ -1,6 +1,7 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Student;
+import com.codecademy.logic.Controller;
 import com.codecademy.logic.DBConnection;
 import com.codecademy.model.StudentDAO;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -13,23 +14,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 import java.util.Optional;
 
-public class StudentController {
+public class StudentController implements Controller {
     private DBConnection dbConnection;
     private StudentDAO studentDAO;
     private Alert alert;
-    private final ToggleGroup group;
-
-    public void setDbConnection(DBConnection dbConnection) {
-        this.dbConnection = dbConnection;
-    }
-
-    public StudentController() {
-        group = new ToggleGroup();
-    }
+    private ToggleGroup group;
 
     @FXML
     public TableView<Student> studentTableView;
-
     @FXML
     public TextField nameField;
     @FXML
@@ -51,14 +43,22 @@ public class StudentController {
     @FXML
     public TextField countryField;
 
+    @Override
+    public void setDBConnection(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     @FXML
     public void initialize() {
         studentDAO = new StudentDAO(dbConnection);
+        group = new ToggleGroup();
+
         loadStudents();
         loadGenderRadioButtons();
 
         studentTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection == null) {
+                studentTableView.getSelectionModel().clearSelection();
                 return;
             }
             Student student = studentTableView.getSelectionModel().getSelectedItem();
@@ -130,6 +130,7 @@ public class StudentController {
             alert.setTitle("Update Error");
             alert.setContentText("Student couldn't be updated!");
             alert.show();
+            loadStudents();
             return;
         }
 
@@ -137,7 +138,6 @@ public class StudentController {
         alert.setTitle("Update succeeded");
         alert.setContentText("Student has been updated!");
         alert.show();
-
         emptyFields();
         loadStudents();
     }
@@ -173,6 +173,7 @@ public class StudentController {
         alert.setTitle("Deletion succeeded");
         alert.setContentText("Student has been deleted!");
         alert.show();
+        emptyFields();
         studentTableView.getItems().remove(studentTableView.getSelectionModel().getSelectedItem());
     }
 
