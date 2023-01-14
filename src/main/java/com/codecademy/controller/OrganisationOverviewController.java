@@ -65,7 +65,9 @@ public class OrganisationOverviewController {
     @FXML
     private void processCreateBTN() {
         Organisation organisation = new Organisation();
-        organisation.setName(organisationNameField.getText());
+        if (!updateOrganisationWithInputs(organisation)) {
+            return;
+        }
         if (!organisationDAO.create(organisation)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Creation Error");
@@ -89,7 +91,9 @@ public class OrganisationOverviewController {
         }
 
         Organisation organisation = organisationTableView.getSelectionModel().getSelectedItem();
-        organisation.setName(organisationNameField.getText());
+        if (!updateOrganisationWithInputs(organisation)) {
+            return;
+        }
 
         if (!organisationDAO.update(organisation)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -135,6 +139,19 @@ public class OrganisationOverviewController {
             alert.setContentText("Organisation has been deleted!");
             alert.show();
             organisationTableView.getItems().remove(organisationTableView.getSelectionModel().getSelectedIndex());
+        }
+    }
+
+    private boolean updateOrganisationWithInputs(Organisation organisation) {
+        try {
+            organisation.setName(organisationNameField.getText());
+            return true;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid organisation input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
         }
     }
 

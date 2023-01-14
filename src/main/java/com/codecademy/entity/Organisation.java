@@ -1,5 +1,6 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.StringTools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -25,6 +26,9 @@ public class Organisation {
     }
 
     public void setName(String name) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(name)) {
+            throw new IllegalArgumentException("Name is empty");
+        }
         this.name.set(name);
     }
 

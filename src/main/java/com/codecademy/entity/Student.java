@@ -7,6 +7,7 @@ package com.codecademy.entity;
 
 import com.codecademy.logic.MailTools;
 import com.codecademy.logic.PostalCode;
+import com.codecademy.logic.StringTools;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -50,7 +51,7 @@ public class Student {
     }
 
     public void setName(String name) {
-        if (name == null || name.length() < 1) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(name)) {
             throw new IllegalArgumentException("Name is empty");
         }
         this.name = name;
@@ -86,7 +87,7 @@ public class Student {
     }
 
     public void setAddress(String address) {
-        if (address == null || address.length() < 1) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(address)) {
             throw new IllegalArgumentException("Address is empty");
         }
         this.address = address;
@@ -105,7 +106,7 @@ public class Student {
     }
 
     public void setCity(String city) {
-        if (city == null || city.length() < 1) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(city)) {
             throw new IllegalArgumentException("City is empty");
         }
         this.city = city;
@@ -116,7 +117,7 @@ public class Student {
     }
 
     public void setCountry(String country) {
-        if (city == null || city.length() < 1) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(country)) {
             throw new IllegalArgumentException("Country is empty");
         }
         this.country = country;
