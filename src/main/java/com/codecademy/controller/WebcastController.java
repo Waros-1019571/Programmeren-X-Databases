@@ -1,6 +1,7 @@
 package com.codecademy.controller;
 
 import com.codecademy.entity.Course;
+import com.codecademy.entity.Student;
 import com.codecademy.entity.VoiceActor;
 import com.codecademy.entity.Webcast;
 import com.codecademy.logic.Controller;
@@ -70,13 +71,9 @@ public class WebcastController implements Controller {
         }
 
         Webcast webcast = new Webcast();
-        webcast.setCourse(new Course());
-        webcast.setVoiceActor(voiceActorComboBox.getValue());
-        webcast.setTitle(webcastTitleField.getText());
-        webcast.setDescription(webcastDescriptionField.getText());
-        webcast.setUrl(webcastURLField.getText());
-        webcast.setPublicationDate(webcastPublicationDateField.getValue());
-        webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
+        if (!updateWebcastWithInputs(webcast)) {
+            return;
+        }
 
         webcastDAO.create(webcast);
         loadWebcasts();
@@ -131,12 +128,9 @@ public class WebcastController implements Controller {
 
         if (result.get() == ButtonType.OK){
             Webcast webcast = webcastTableView.getSelectionModel().getSelectedItem();
-            webcast.setTitle(webcastTitleField.getText());
-            webcast.setDescription(webcastDescriptionField.getText());
-            webcast.setUrl(webcastURLField.getText());
-            webcast.setPublicationDate(webcastPublicationDateField.getValue());
-            webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
-            webcast.setVoiceActor(voiceActorComboBox.getValue());
+            if (!updateWebcastWithInputs(webcast)) {
+                return;
+            }
 
             if (!webcastDAO.update(webcast)) {
                 alert = new Alert(Alert.AlertType.ERROR);
@@ -162,7 +156,7 @@ public class WebcastController implements Controller {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Input error");
         alert.setHeaderText("Input error!");
-        alert.setContentText("Please put a number in the field 'Duration'!");
+        alert.setContentText("Please put a positive number in the field 'Duration'!");
         alert.show();
         return false;
     }
@@ -240,5 +234,24 @@ public class WebcastController implements Controller {
         alert.setContentText("Webcast hasn't been selected.\nPlease select an webcast!");
         alert.show();
         return true;
+    }
+
+    private boolean updateWebcastWithInputs(Webcast webcast) {
+        try {
+            webcast.setCourse(new Course());
+            webcast.setVoiceActor(voiceActorComboBox.getValue());
+            webcast.setTitle(webcastTitleField.getText());
+            webcast.setDescription(webcastDescriptionField.getText());
+            webcast.setUrl(webcastURLField.getText());
+            webcast.setPublicationDate(webcastPublicationDateField.getValue());
+            webcast.setDuration(Integer.parseInt(webcastDurationField.getText()));
+            return true;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid webcast input");
+            alert.setContentText("Please make sure the input is correct: " + e.getMessage());
+            alert.show();
+            return false;
+        }
     }
 }

@@ -26,7 +26,7 @@ public class NumericRangeTools {
     }
 
     /**
-     * @desc Validates if the input is within range of 0-100%
+     * @desc Validates if the input is within range of 0.0-100.0%
      *
      * @subcontract value within valid range {
      *   @requires 0.0 <= percentage <= 100.0;
@@ -34,12 +34,12 @@ public class NumericRangeTools {
      * }
      *
      * @subcontract value out of range low {
-     *   @requires percentage < 0;
+     *   @requires percentage < 0.0;
      *   @ensures \result = false;
      * }
      *
      * @subcontract value out of range high {
-     *   @requires percentage > 100;
+     *   @requires percentage > 100.0;
      *   @ensures \result = false;
      * }
      *
@@ -47,6 +47,24 @@ public class NumericRangeTools {
     public static boolean isValidPercentage(double percentage) {
         return isValidPercentage((int)Math.floor(percentage)) && // Makes -0.00000000000001 invalid
                isValidPercentage((int)Math.ceil(percentage));    // Makes 100.00000000000001 invalid
+    }
+
+    /**
+     * @desc Validates if the input is within range of 0 and Integer.MAX_VALUE
+     *
+     * @subcontract value within valid range {
+     *   @requires input >= 0;
+     *   @ensures \result = true;
+     * }
+     *
+     * @subcontract value outside of valid range {
+     *   @requires input < 0;
+     *   @ensures \result = false;
+     * }
+     *
+     */
+    public static boolean isPositiveNumber(int input) {
+        return isWithinRange(input, 0, Integer.MAX_VALUE);
     }
 
     /**

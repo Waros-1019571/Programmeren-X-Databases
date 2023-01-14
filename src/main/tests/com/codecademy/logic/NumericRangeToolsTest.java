@@ -107,6 +107,44 @@ public class NumericRangeToolsTest {
         assertFalse(result);
     }
 
+    // isPositiveNumber
+
+    @Test
+    public void isPositiveNumberInput0ReturnsTrue() {
+        // Arrange
+        int input = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isPositiveNumber(input);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isPositiveNumberInputIntegerMaxValueReturnsTrue() {
+        // Arrange
+        int input = Integer.MAX_VALUE;
+
+        // Act
+        boolean result = NumericRangeTools.isPositiveNumber(input);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isPositiveNumberInputIntegerNegativeReturnsTrue() {
+        // Arrange
+        int input = -1;
+
+        // Act
+        boolean result = NumericRangeTools.isPositiveNumber(input);
+
+        // Assert
+        assertFalse(result);
+    }
+
     // isWithinRange
 
     @Test
