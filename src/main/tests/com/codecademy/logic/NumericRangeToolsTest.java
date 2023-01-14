@@ -145,10 +145,10 @@ public class NumericRangeToolsTest {
         assertFalse(result);
     }
 
-    // isWithinRange
+    // isWithinRange int
 
     @Test
-    public void isWithinRangeValueWithinValidRangeMinReturnsTrue() {
+    public void isWithinRangeIntValueWithinValidRangeMinReturnsTrue() {
         // Arrange
         int input = -1;
         int min = -1;
@@ -162,7 +162,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isWithinRangeValueWithinValidRangeMaxReturnsTrue() {
+    public void isWithinRangeIntValueWithinValidRangeMaxReturnsTrue() {
         // Arrange
         int input = 0;
         int min = -1;
@@ -176,7 +176,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isWithinRangeValueWithinSameRangeReturnsTrue() {
+    public void isWithinRangeIntValueWithinSameRangeReturnsTrue() {
         // Arrange
         int input = 0;
         int min = 0;
@@ -190,7 +190,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isWithinRangeValueOutsideValidRangeMinReturnsFalse() {
+    public void isWithinRangeIntValueOutsideValidRangeMinReturnsFalse() {
         // Arrange
         int input = -2;
         int min = -1;
@@ -204,7 +204,7 @@ public class NumericRangeToolsTest {
     }
 
     @Test
-    public void isWithinRangeValueOutsideValidRangeMaxReturnsFalse() {
+    public void isWithinRangeIntValueOutsideValidRangeMaxReturnsFalse() {
         // Arrange
         int input = 1;
         int min = -1;
@@ -218,11 +218,94 @@ public class NumericRangeToolsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void isWithinRangeMinBiggerThanMaxThrowsIllegalArgumentException() {
+    public void isWithinRangeIntMinBiggerThanMaxThrowsIllegalArgumentException() {
         // Arrange
         int input = 0;
         int min = 1;
         int max = -1;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+    }
+
+    // isWithinRange double
+
+    @Test
+    public void isWithinRangeDoubleValueWithinValidRangeMinReturnsTrue() {
+        // Arrange
+        double input = -1;
+        double min = -1;
+        double max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeDoubleValueWithinValidRangeMaxReturnsTrue() {
+        // Arrange
+        double input = 0;
+        double min = -1;
+        double max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeDoubleValueWithinSameRangeReturnsTrue() {
+        // Arrange
+        double input = 0;
+        double min = 0;
+        double max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeDoubleValueOutsideValidRangeMinReturnsFalse() {
+        // Arrange
+        double input = -2;
+        double min = -1;
+        double max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void isWithinRangeDoubleValueOutsideValidRangeMaxReturnsFalse() {
+        // Arrange
+        double input = 1;
+        double min = -1;
+        double max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isWithinRangeDoubleMinBiggerThanMaxThrowsIllegalArgumentException() {
+        // Arrange
+        double input = 0;
+        double min = 1;
+        double max = -1;
 
         // Act
         boolean result = NumericRangeTools.isWithinRange(input, min, max);

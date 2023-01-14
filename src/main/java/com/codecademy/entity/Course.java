@@ -9,7 +9,6 @@ public class Course {
     private String title;
     private String topic;
     private String ownerName;
-    private String ownerEmail;
     private String description;
     private int courseLevel;
 

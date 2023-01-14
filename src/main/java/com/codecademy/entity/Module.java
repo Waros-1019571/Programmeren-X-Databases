@@ -1,5 +1,7 @@
 package com.codecademy.entity;
 
+import com.codecademy.logic.NumericRangeTools;
+import com.codecademy.logic.StringTools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -43,6 +45,9 @@ public class Module {
     }
 
     public void setCourseID(int courseID) {
+        if (!NumericRangeTools.isPositiveNumber(courseID)) {
+            throw new IllegalArgumentException("Course ID is negative");
+        }
         this.courseID.set(courseID);
     }
 
@@ -51,6 +56,9 @@ public class Module {
     }
 
     public void setTitle(String title) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(title)) {
+            throw new IllegalArgumentException("Title is empty");
+        }
         this.title.set(title);
     }
 
@@ -59,6 +67,9 @@ public class Module {
     }
 
     public void setDescription(String description) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(description)) {
+            throw new IllegalArgumentException("Description is empty");
+        }
         this.description.set(description);
     }
 
@@ -67,6 +78,9 @@ public class Module {
     }
 
     public void setSerialNumber(String serialNumber) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(serialNumber)) {
+            throw new IllegalArgumentException("Serial number is empty");
+        }
         this.serialNumber.set(serialNumber);
     }
 
@@ -75,6 +89,9 @@ public class Module {
     }
 
     public void setPublicationDate(Date publicationDate) {
+        if (publicationDate == null) {
+            throw new IllegalArgumentException("Publication date is empty");
+        }
         this.publicationDate.set(publicationDate);
     }
 
@@ -83,6 +100,9 @@ public class Module {
     }
 
     public void setVersion(String version) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(version)) {
+            throw new IllegalArgumentException("Version is empty");
+        }
         this.version.set(version);
     }
 
@@ -99,6 +119,9 @@ public class Module {
     }
 
     public void setContactName(String contactName) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(contactName)) {
+            throw new IllegalArgumentException("Contact name is empty");
+        }
         this.contactName.set(contactName);
     }
 
@@ -107,13 +130,20 @@ public class Module {
     }
 
     public void setContactEmail(String contactEmail) {
+        if (!StringTools.isNotNullEmptyOrWhitespace(contactEmail)) {
+            throw new IllegalArgumentException("Contact email is empty");
+        }
         this.contactEmail.set(contactEmail);
     }
 
     public int getID() {
         return ID.get();
     }
+
     public void setID(int ID) {
+        if (!NumericRangeTools.isPositiveNumber(ID)) {
+            throw new IllegalArgumentException("ID is negative");
+        }
         this.ID.set(ID);
     }
 }

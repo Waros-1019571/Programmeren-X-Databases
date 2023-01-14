@@ -5,6 +5,7 @@
  */
 package com.codecademy.entity;
 
+import com.codecademy.logic.NumericRangeTools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 /**
@@ -26,15 +27,20 @@ public class Certificate {
     }
 
     public void setCertificateId(int certificateId) {
+        if (!NumericRangeTools.isPositiveNumber(certificateId)) {
+            throw new IllegalArgumentException("ID is negative");
+        }
         this.certificateId.set(certificateId);
     }
-//
 
     public double getGrade() {
         return grade.get();
     }
 
     public void setGrade(double grade) {
+        if (!NumericRangeTools.isWithinRange(grade, 1, 10)) {
+            throw new IllegalArgumentException("Grade must be between a 1.0 and 10.0");
+        }
         this.grade.set(grade);
     }
 }

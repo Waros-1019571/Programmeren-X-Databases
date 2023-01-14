@@ -45,8 +45,7 @@ public class NumericRangeTools {
      *
      */
     public static boolean isValidPercentage(double percentage) {
-        return isValidPercentage((int)Math.floor(percentage)) && // Makes -0.00000000000001 invalid
-               isValidPercentage((int)Math.ceil(percentage));    // Makes 100.00000000000001 invalid
+        return isWithinRange(percentage, 0.0, 100.0);
     }
 
     /**
@@ -92,6 +91,40 @@ public class NumericRangeTools {
      *
      */
     public static boolean isWithinRange(int input, int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Min is bigger than max");
+        }
+        if (input >= min && input <= max) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @desc Validates if the input is within range of min and max
+     *
+     * @subcontract value within valid range {
+     *   @requires min <= input <= max;
+     *   @ensures \result = true;
+     * }
+     *
+     * @subcontract value out of range low {
+     *   @requires input < min;
+     *   @ensures \result = false;
+     * }
+     *
+     * @subcontract value out of range high {
+     *   @requires input > max;
+     *   @ensures \result = false;
+     * }
+     *
+     * @subcontract min bigger than max {
+     *   @requires min > max;
+     *   @signals (IllegalArgumentException);
+     * }
+     *
+     */
+    public static boolean isWithinRange(double input, double min, double max) {
         if (min > max) {
             throw new IllegalArgumentException("Min is bigger than max");
         }

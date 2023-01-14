@@ -21,7 +21,7 @@ public class Webcast {
     public Webcast() {
     }
 
-    public void addStudentProgress (Student student, double progress) {
+    public void addStudentProgress(Student student, double progress) {
         if (student == null) {
             throw new NullPointerException("Missing student");
         }
