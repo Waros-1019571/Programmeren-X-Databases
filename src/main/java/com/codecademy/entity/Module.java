@@ -17,11 +17,9 @@ public class Module {
     private SimpleIntegerProperty courseID;
     private SimpleStringProperty title;
     private SimpleStringProperty description;
-    private SimpleStringProperty serialNumber;
     private SimpleObjectProperty publicationDate;
     private SimpleStringProperty version;
     private SimpleMapProperty<Student, Double> progressOfStudents;
-    private Module module;
     private SimpleStringProperty contactName;
     private SimpleStringProperty contactEmail;
 
@@ -31,10 +29,8 @@ public class Module {
         this.courseID = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
         this.description = new SimpleStringProperty();
-        this.serialNumber = new SimpleStringProperty();
         this.publicationDate = new SimpleObjectProperty();
         this.version = new SimpleStringProperty();
-//        this.module = new Simple<>()
         this.progressOfStudents = new SimpleMapProperty<>();
         this.contactEmail = new SimpleStringProperty();
         this.contactName = new SimpleStringProperty();
@@ -73,17 +69,6 @@ public class Module {
         this.description.set(description);
     }
 
-    public String getSerialNumber() {
-        return serialNumber.get();
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        if (!StringTools.isNotNullEmptyOrWhitespace(serialNumber)) {
-            throw new IllegalArgumentException("Serial number is empty");
-        }
-        this.serialNumber.set(serialNumber);
-    }
-
     public Date getPublicationDate() {
         return (Date) publicationDate.get();
     }
@@ -104,10 +89,6 @@ public class Module {
             throw new IllegalArgumentException("Version is empty");
         }
         this.version.set(version);
-    }
-
-    public Module getModule() {
-        return module;
     }
 
     public ObservableMap<Student, Double> getProgressOfStudents() {

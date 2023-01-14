@@ -116,7 +116,7 @@ public class WebcastDAO implements DAO<Webcast> {
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
-                throw new NoSuchElementException("Update failed: no rows affected.");
+                throw new NoSuchElementException("Create failed: no rows affected.");
             }
 
             result = true;
