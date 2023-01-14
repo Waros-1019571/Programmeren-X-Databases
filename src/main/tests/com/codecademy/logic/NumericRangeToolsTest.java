@@ -54,4 +54,85 @@ public class NumericRangeToolsTest {
         // Assert
         assertFalse(result);
     }
+
+    @Test
+    public void isWithinRangeValueWithinValidRangeMinReturnsTrue() {
+        // Arrange
+        int input = -1;
+        int min = -1;
+        int max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeValueWithinValidRangeMaxReturnsTrue() {
+        // Arrange
+        int input = 0;
+        int min = -1;
+        int max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeValueWithinSameRangeReturnsTrue() {
+        // Arrange
+        int input = 0;
+        int min = 0;
+        int max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    public void isWithinRangeValueOutsideValidRangeMinReturnsFalse() {
+        // Arrange
+        int input = -2;
+        int min = -1;
+        int max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void isWithinRangeValueOutsideValidRangeMaxReturnsFalse() {
+        // Arrange
+        int input = 1;
+        int min = -1;
+        int max = 0;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isWithinRangeMinBiggerThanMaxThrowsIllegalArgumentException() {
+        // Arrange
+        int input = 0;
+        int min = 1;
+        int max = -1;
+
+        // Act
+        boolean result = NumericRangeTools.isWithinRange(input, min, max);
+    }
 }
