@@ -14,7 +14,7 @@ public class CodecademyApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Codecademy");
+        stage.setTitle("Kelvin L. 2205396, Tycho B. 2199294, Waros Y. 2209602 & Daan de V. 2205132");
         stage.show();
     }
 
