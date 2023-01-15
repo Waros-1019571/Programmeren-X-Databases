@@ -1,6 +1,7 @@
 package com.codecademy.model;
 
 
+import com.codecademy.entity.Course;
 import com.codecademy.entity.Module;
 import com.codecademy.logic.DAO;
 import com.codecademy.logic.DBConnection;
@@ -8,6 +9,7 @@ import com.codecademy.logic.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ModuleDAO implements DAO<Module> {
 
@@ -26,19 +28,24 @@ public class ModuleDAO implements DAO<Module> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT ID, Version, ContactName, ContactEmail, Title, Description, PublicationDate, CourseID FROM MODULE");
+            result = statement.executeQuery("SELECT m.CourseID, c.Title, m.ID, m.Version, m.ContactName, m.ContactEmail, m.Title, m.Description, m.PublicationDate FROM MODULE AS m LEFT JOIN Course AS c ON m.CourseID = C.ID");
             moduleList = new ArrayList<>();
 
             while (result.next()) {
+                Course course = new Course();
                 Module module = new Module();
-                module.setCourseID(result.getInt(1));
-                module.setVersion(result.getString(2));
-                module.setContactName(result.getString(3));
-                module.setContactEmail(result.getString(4));
-                module.setTitle(result.getString(5));
-                module.setDescription(result.getString(6));
-                module.setPublicationDate(result.getDate(7));
-                module.setCourseID(result.getInt(8));
+
+                course.setCourseId(result.getInt(1));
+                course.setTitle(result.getString(2));
+                module.setCourse(course);
+
+                module.setID(3);
+                module.setVersion(result.getDouble(4));
+                module.setContactName(result.getString(5));
+                module.setContactEmail(result.getString(6));
+                module.setTitle(result.getString(7));
+                module.setDescription(result.getString(8));
+                module.setPublicationDate(result.getDate(9));
                 moduleList.add(module);
             }
 
@@ -58,14 +65,8 @@ public class ModuleDAO implements DAO<Module> {
 
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("INSERT INTO MODULE (Version, ContactName, ContactEmail, Title, Description, PublicationDate, CourseID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            statement.setString(1, module.getVersion());
-            statement.setString(2, module.getContactName());
-            statement.setString(3, module.getContactEmail());
-            statement.setString(4, module.getTitle());
-            statement.setString(5, module.getDescription());
-            statement.setObject(6, module.getPublicationDate());
-            statement.setObject(7, module.getCourseID());
+            statement = connection.prepareStatement("INSERT INTO MODULE (Title, Version, ContactName, ContactEmail, PublicationDate, CourseID, Description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            putModuleInStatement(statement, module);
             isCreated = (statement.executeUpdate() > 0);
 
         } catch (SQLException e) {
@@ -80,17 +81,10 @@ public class ModuleDAO implements DAO<Module> {
     public boolean update(Module module) {
         PreparedStatement statement = null;
         boolean isUpdated = false;
-
         try {
             Connection connection = dbConnection.getConnection();
-            statement = connection.prepareStatement("UPDATE MODULE SET Version = ?,ContactName = ?,ContactEmail = ?,Title = ?,Description = ?,PublicationDate = ?,CourseID = ? WHERE ID = ?");
-            statement.setString(1, module.getVersion());
-            statement.setString(2, module.getContactName());
-            statement.setString(3, module.getContactEmail());
-            statement.setString(4, module.getTitle());
-            statement.setString(5, module.getDescription());
-            statement.setObject(6, module.getPublicationDate());
-            statement.setObject(7, module.getCourseID());
+            statement = connection.prepareStatement("UPDATE MODULE SET Title = ?, Version = ?, ContactName = ?, ContactEmail = ?, PublicationDate = ?, CourseID = ?, Description = ? WHERE ID = ?");
+            putModuleInStatement(statement, module);
             statement.setObject(8, module.getID());
             isUpdated = (statement.executeUpdate() > 0);
 
@@ -104,16 +98,13 @@ public class ModuleDAO implements DAO<Module> {
 
     @Override
     public boolean delete(Module module) {
-
         PreparedStatement statement = null;
         boolean isDeleted = false;
-
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("DELETE FROM MODULE WHERE ID = ?");
             statement.setInt(1, module.getID());
             isDeleted = statement.executeUpdate() > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -122,6 +113,20 @@ public class ModuleDAO implements DAO<Module> {
 
         return isDeleted;
 
+    }
+
+    private void putModuleInStatement(PreparedStatement statement, Module module) throws SQLException {
+        try {
+            statement.setString(1, module.getTitle());
+            statement.setDouble(2, module.getVersion());
+            statement.setString(3, module.getContactName());
+            statement.setString(4, module.getContactEmail());
+            statement.setObject(5, module.getPublicationDate());
+            statement.setObject(6, module.getCourse().getCourseId());
+            statement.setString(7, module.getDescription());
+        } catch (SQLException| NoSuchElementException e) {
+            e.printStackTrace();
+        }
     }
 
     private void closeRequest(Statement statement, ResultSet resultSet) {

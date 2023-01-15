@@ -75,7 +75,7 @@ public class CourseDAO implements DAO<Course> {
             Connection connection = dbConnection.getConnection();
             statement = connection.prepareStatement("UPDATE COURSE SET Title = ?, Topic = ?, CourseOwner = ?, Description = ?,CourseLevel = ?, CourseStatus = ? WHERE ID = ?");
             putCourseInStatementWithoutID(statement, course);
-            statement.setInt(8, course.getCourseId());
+            statement.setInt(7, course.getCourseId());
             isUpdated = statement.executeUpdate() > 0;
         } catch (SQLException | NoSuchElementException e) {
             e.printStackTrace();

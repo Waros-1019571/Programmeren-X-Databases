@@ -3,20 +3,12 @@ package com.codecademy.controller;
 import com.codecademy.CodecademyApplication;
 import com.codecademy.logic.Controller;
 import com.codecademy.logic.DBConnection;
-import com.codecademy.model.CourseDAO;
-import com.codecademy.model.OrganisationDAO;
-import com.codecademy.model.VoiceActorDAO;
-import com.codecademy.model.WebcastDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class CodecademyController {
     private DBConnection dbConnection = new DBConnection();
@@ -31,6 +23,8 @@ public class CodecademyController {
     private Pane studentPane;
     @FXML
     private Pane coursePane;
+    @FXML
+    private Pane modulePane;
 
     @FXML
     public void initialize() {
@@ -39,6 +33,7 @@ public class CodecademyController {
         loadController("voiceActor-view.fxml", new VoiceActorController(), voiceActorPane);
         loadController("Webcast-view.fxml", new WebcastController(), webcastPane);
         loadController("Student-view.fxml", new StudentController(), studentPane);
+        loadController("Module-view.fxml", new ModuleController(), modulePane);
     }
 
     private void loadController(String recourseName, Controller controller, Pane pane) {
