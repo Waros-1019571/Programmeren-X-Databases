@@ -1,9 +1,25 @@
 package com.codecademy.entity;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 public class Enrollment {
+    private Date enrollmentDate;
     private Student student;
     private Course course;
     private Certificate certificate;
+
+    public Date getEnrollmentDate() {
+        return enrollmentDate;
+    }
+
+    public void setEnrollmentDate(Date enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
+    }
+
+    public void setEnrollmentDate(LocalDate enrollmentDate) {
+        this.enrollmentDate = Date.valueOf(enrollmentDate);
+    }
 
     public Student getStudent() {
         return student;
@@ -32,9 +48,6 @@ public class Enrollment {
     }
 
     public void setCertificate(Certificate certificate) {
-        if (certificate == null) {
-            throw new IllegalArgumentException("Missing certificate");
-        }
         this.certificate = certificate;
     }
 }

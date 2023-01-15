@@ -135,4 +135,9 @@ public class Student {
         }
         return "Unknown";
     }
+
+    @Override
+    public String toString() {
+        return email;
+    }
 }

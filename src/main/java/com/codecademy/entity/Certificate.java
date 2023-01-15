@@ -6,10 +6,8 @@
 package com.codecademy.entity;
 
 import com.codecademy.logic.NumericRangeTools;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  *
@@ -17,36 +15,65 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Certificate {
 
-    private SimpleIntegerProperty certificateId;
-    private SimpleDoubleProperty grade;
-    private SimpleStringProperty adress;
-
-    public Certificate() {
-        this.certificateId = new SimpleIntegerProperty();
-        this.grade = new SimpleDoubleProperty();
-        this.adress = new SimpleStringProperty()
-    }
+    private int certificateId;
+    private Date certificationDate;
+    private double grade;
+    private String signedBy;
 
     public int getCertificateId() {
-        return certificateId.get();
+        return certificateId;
     }
 
     public void setCertificateId(int certificateId) {
         if (!NumericRangeTools.isPositiveNumber(certificateId)) {
             throw new IllegalArgumentException("ID is negative");
         }
-        this.certificateId.set(certificateId);
+        this.certificateId = certificateId;
+    }
+
+    public Date getCertificationDate() {
+        return certificationDate;
+    }
+
+    public void setCertificationDate(Date certificationDate) {
+        this.certificationDate = certificationDate;
+    }
+
+    public void setCertificationDate(LocalDate certificationDate) {
+        this.certificationDate = Date.valueOf(certificationDate);
     }
 
     public double getGrade() {
-        return grade.get();
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        if (grade == null || grade.isEmpty()) {
+            throw new IllegalArgumentException("Grade is empty");
+        }
+        try {
+            setGrade(Double.parseDouble(grade));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Grade is not a decimal");
+        }
     }
 
     public void setGrade(double grade) {
-        if (!NumericRangeTools.isWithinRange(grade, 1, 10)) {
-            throw new IllegalArgumentException("Grade must be between a 1.0 and 10.0");
+        if (!NumericRangeTools.isWithinRange(grade, 0, 10)) {
+            throw new IllegalArgumentException("Grade must be between a 0 and 10.0");
         }
-        this.grade.set(grade);
+        this.grade = grade;
+    }
+
+    public String getSignedBy() {
+        return signedBy;
+    }
+
+    public void setSignedBy(String signedBy) {
+        if (signedBy == null || signedBy.isEmpty()) {
+            throw new IllegalArgumentException("Certification has to be signed by someone");
+        }
+        this.signedBy = signedBy;
     }
 
     public String getAdress() {

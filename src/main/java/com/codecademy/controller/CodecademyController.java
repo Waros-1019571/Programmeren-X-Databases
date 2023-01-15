@@ -25,6 +25,8 @@ public class CodecademyController {
     private Pane coursePane;
     @FXML
     private Pane modulePane;
+    @FXML
+    private Pane enrollmentPane;
 
     @FXML
     public void initialize() {
@@ -34,6 +36,7 @@ public class CodecademyController {
         loadController("Webcast-view.fxml", new WebcastController(), webcastPane);
         loadController("Student-view.fxml", new StudentController(), studentPane);
         loadController("Module-view.fxml", new ModuleController(), modulePane);
+        loadController("Enrollment-view.fxml", new EnrollmentController(), enrollmentPane);
     }
 
     private void loadController(String recourseName, Controller controller, Pane pane) {
