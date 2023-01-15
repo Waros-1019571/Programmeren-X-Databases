@@ -75,12 +75,4 @@ public class Certificate {
         }
         this.signedBy = signedBy;
     }
-
-    public String getAdress() {
-        return adress.get();
-    }
-    
-    public void setAdress(String adress) {
-        this.adress.set(adress);
-    }
 }
