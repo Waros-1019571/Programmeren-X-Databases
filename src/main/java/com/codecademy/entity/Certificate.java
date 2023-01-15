@@ -8,6 +8,9 @@ package com.codecademy.entity;
 import com.codecademy.logic.NumericRangeTools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  *
  * @author Daan
@@ -16,10 +19,12 @@ public class Certificate {
 
     private SimpleIntegerProperty certificateId;
     private SimpleDoubleProperty grade;
+    private SimpleStringProperty adress;
 
     public Certificate() {
         this.certificateId = new SimpleIntegerProperty();
         this.grade = new SimpleDoubleProperty();
+        this.adress = new SimpleStringProperty()
     }
 
     public int getCertificateId() {
@@ -42,5 +47,13 @@ public class Certificate {
             throw new IllegalArgumentException("Grade must be between a 1.0 and 10.0");
         }
         this.grade.set(grade);
+    }
+
+    public String getAdress() {
+        return adress.get();
+    }
+    
+    public void setAdress(String adress) {
+        this.adress.set(adress);
     }
 }
