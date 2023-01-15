@@ -28,7 +28,7 @@ public class ModuleDAO implements DAO<Module> {
         try {
             Connection connection = dbConnection.getConnection();
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT m.CourseID, c.Title, m.ID, m.Version, m.ContactName, m.ContactEmail, m.Title, m.Description, m.PublicationDate FROM MODULE AS m LEFT JOIN Course AS c ON m.CourseID = C.ID");
+            result = statement.executeQuery("SELECT m.CourseID, c.Title, m.ID AS moduleID, m.Version, m.ContactName, m.ContactEmail, m.Title, m.Description, m.PublicationDate FROM MODULE AS m LEFT JOIN Course AS c ON m.CourseID = C.ID");
             moduleList = new ArrayList<>();
 
             while (result.next()) {
@@ -39,7 +39,7 @@ public class ModuleDAO implements DAO<Module> {
                 course.setTitle(result.getString(2));
                 module.setCourse(course);
 
-                module.setID(3);
+                module.setID(result.getInt("moduleID"));
                 module.setVersion(result.getDouble(4));
                 module.setContactName(result.getString(5));
                 module.setContactEmail(result.getString(6));

@@ -1,5 +1,6 @@
 package com.codecademy.model;
 
+import com.codecademy.entity.Course;
 import com.codecademy.entity.Student;
 import com.codecademy.entity.Webcast;
 import com.codecademy.entity.WebcastProgression;
@@ -64,7 +65,7 @@ public class WebcastProgressionDAO implements DAO<WebcastProgression> {
             statement = connection.prepareStatement("INSERT INTO STUDENT_WEBCAST (StudentID, WebcastID, Progress) VALUES(?,?,?)");
             statement.setInt(1, webcastProgression.getStudent().getId());
             statement.setInt(2, webcastProgression.getWebcast().getId());
-            statement.setInt(3, webcastProgression.getProgress());
+            statement.setDouble(3, webcastProgression.getProgress());
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
@@ -84,15 +85,20 @@ public class WebcastProgressionDAO implements DAO<WebcastProgression> {
 
     @Override
     public boolean update(WebcastProgression webcastProgression) {
+        return false;
+    }
+
+    public boolean update(WebcastProgression webcastProgression, Course course) {
         boolean result = false;
         Connection connection = dbConnection.getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = connection.prepareStatement("UPDATE STUDENT_WEBCAST SET Progress = ? WHERE StudentID = ? AND WebcastID = ?");
-            statement.setInt(1, webcastProgression.getProgress());
+            statement = connection.prepareStatement("UPDATE STUDENT_WEBCAST SET Progress = ? WHERE StudentID = ? AND WebcastID = " +
+                    "(SELECT WebcastID FROM Webcast WHERE CourseID = ?)");
+            statement.setDouble(1, webcastProgression.getProgress());
             statement.setInt(2, webcastProgression.getStudent().getId());
-            statement.setInt(3, webcastProgression.getWebcast().getId());
+            statement.setInt(3, course.getCourseId());
 
             if (statement.executeUpdate() == 0) {
                 throw new NoSuchElementException("Update failed: no rows affected.");
@@ -127,6 +133,58 @@ public class WebcastProgressionDAO implements DAO<WebcastProgression> {
             return false;
         }
         return true;
+    }
+
+    public double getProgress(Student student, Course course) {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        double progress = 0;
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            statement = connection.prepareStatement("SELECT sw.Progress " +
+                    "FROM Student_Webcast AS sw " +
+                    "JOIN Webcast AS w ON w.ID = sw.WebcastID " +
+                    "JOIN Course AS co ON co.ID = w.CourseID AND co.ID = ? AND sw.StudentID = ?");
+            statement.setInt(1, course.getCourseId());
+            statement.setInt(2, student.getId());
+
+            result = statement.executeQuery();
+            if (result.next()) {
+                progress = result.getInt(1);
+            }
+            return progress;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement);
+        }
+        return progress;
+    }
+
+    public boolean saveProgression(WebcastProgression webcastProgression, Course course) {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        try {
+            Connection connection = dbConnection.getConnection();
+    statement = connection.prepareStatement("SELECT COUNT(*) FROM Webcast AS w JOIN Student_Webcast AS sw ON w.ID = sw.WebcastID AND sw.StudentID = ? AND w.CourseID = ?");
+            statement.setInt(1, course.getCourseId());
+            statement.setInt(2, webcastProgression.getStudent().getId());
+
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                if (result.getInt(1) > 1) {
+                    return create(webcastProgression);
+                }
+                return update(webcastProgression, course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeRequest(statement,result);
+        }
+        return false;
     }
 
     private void closeRequest(Statement statement, ResultSet resultSet) {

@@ -119,5 +119,24 @@
             </ScrollPane>
          </content>
       </Tab>
+      <Tab text="Statistics">
+          <content>
+              <ScrollPane fitToWidth="true">
+                  <content>
+                      <GridPane fx:id="statisticsPane">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints vgrow="SOMETIMES" />
+                          </rowConstraints>
+                          <padding>
+                              <Insets bottom="20.0" />
+                          </padding>
+                      </GridPane>
+                  </content>
+              </ScrollPane>
+          </content>
+      </Tab>
   </tabs>
 </TabPane>

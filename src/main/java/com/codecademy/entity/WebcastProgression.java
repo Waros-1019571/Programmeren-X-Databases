@@ -5,7 +5,7 @@ import com.codecademy.logic.NumericRangeTools;
 public class WebcastProgression {
     private Webcast webcast;
     private Student student;
-    private int progress;
+    private double progress;
 
     public Webcast getWebcast() {
         return webcast;
@@ -29,11 +29,11 @@ public class WebcastProgression {
         this.student = student;
     }
 
-    public int getProgress() {
+    public double getProgress() {
         return progress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(double progress) {
         if (!NumericRangeTools.isValidPercentage(progress)) {
             throw new IllegalArgumentException("Progress is not a valid percentage");
         }

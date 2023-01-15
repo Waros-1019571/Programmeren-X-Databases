@@ -26,6 +26,8 @@ public class CodecademyController {
     @FXML
     private Pane modulePane;
     @FXML
+    private Pane statisticsPane;
+    @FXML
     private Pane enrollmentPane;
 
     @FXML
@@ -36,6 +38,7 @@ public class CodecademyController {
         loadController("Webcast-view.fxml", new WebcastController(), webcastPane);
         loadController("Student-view.fxml", new StudentController(), studentPane);
         loadController("Module-view.fxml", new ModuleController(), modulePane);
+        loadController("StudentProgressionview.fxml", new StudentProgressionController(), statisticsPane);
         loadController("Enrollment-view.fxml", new EnrollmentController(), enrollmentPane);
     }
 
